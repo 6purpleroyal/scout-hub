@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Scout Hub - Basketball Talent Discovery Platform
 
 A modern basketball scouting platform with detailed player analytics, performance metrics, and team statistics.
@@ -177,3 +178,7 @@ For questions or feedback, please contact your development team.
 ---
 
 **Built with ❤️ for basketball scouts, coaches, and fans**
+=======
+# scout-hub
+A modern basketball scouting platform with detailed player analytics, performance metrics, and team statistics
+>>>>>>> d5c5b1290daa906391b8f4b1b929536ebc7e43e5
