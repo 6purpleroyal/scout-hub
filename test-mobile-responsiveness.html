@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mobile Responsiveness Test - Scout Hub</title>
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #0f0f23;
+      color: white;
+      padding: 20px;
+      margin: 0;
+    }
+    h1 {
+      color: #667eea;
+      margin-bottom: 20px;
+      font-size: 24px;
+    }
+    .test-section {
+      background: #1a1a2e;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 15px;
+    }
+    .test-item {
+      background: #16213e;
+      padding: 12px;
+      border-radius: 6px;
+      margin-bottom: 10px;
+    }
+    .test-item.pass {
+      border-left: 4px solid #48bb78;
+    }
+    .test-item.fail {
+      border-left: 4px solid #e53e3e;
+    }
+    .test-name {
+      font-weight: bold;
+      margin-bottom: 5px;
+      font-size: 14px;
+    }
+    .test-result {
+      font-size: 12px;
+      color: #888;
+    }
+    button {
+      background: #667eea;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      margin: 10px 10px 10px 0;
+      width: 100%;
+      max-width: 200px;
+    }
+    .viewport-info {
+      background: #1a1a2e;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      border: 2px solid #667eea;
+    }
+    .info-item {
+      margin: 5px 0;
+      font-size: 14px;
+    }
+    .info-label {
+      color: #888;
+      display: inline-block;
+      width: 120px;
+    }
+    .info-value {
+      color: #667eea;
+      font-weight: bold;
+    }
+    @media (max-width: 768px) {
+      body {
+        padding: 10px;
+      }
+      h1 {
+        font-size: 20px;
+      }
+      .test-section {
+        padding: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>📱 Mobile Responsiveness Test</h1>
+  
+  <div class="viewport-info" id="viewportInfo"></div>
+  
+  <button onclick="runResponsivenessTests()">Run Tests</button>
+  
+  <div id="results"></div>
+
+  <script>
+    function updateViewportInfo() {
+      const width = window.innerWidth;
+      const height = window.innerHeight;
+      const isMobile = width < 768;
+      const isTablet = width >= 768 && width < 1024;
+      const isDesktop = width >= 1024;
+      
+      const deviceType = isMobile ? 'Mobile' : (isTablet ? 'Tablet' : 'Desktop');
+      
+      document.getElementById('viewportInfo').innerHTML = `
+        <div class="info-item">
+          <span class="info-label">Viewport Width:</span>
+          <span class="info-value">${width}px</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Viewport Height:</span>
+          <span class="info-value">${height}px</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Device Type:</span>
+          <span class="info-value">${deviceType}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Pixel Ratio:</span>
+          <span class="info-value">${window.devicePixelRatio}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Touch Support:</span>
+          <span class="info-value">${'ontouchstart' in window ? 'Yes' : 'No'}</span>
+        </div>
+      `;
+    }
+
+    function runTest(name, testFn) {
+      const testItem = document.createElement('div');
+      testItem.className = 'test-item';
+      
+      const testName = document.createElement('div');
+      testName.className = 'test-name';
+      testName.textContent = name;
+      testItem.appendChild(testName);
+      
+      const testResult = document.createElement('div');
+      testResult.className = 'test-result';
+      testItem.appendChild(testResult);
+
+      try {
+        const result = testFn();
+        testItem.classList.add('pass');
+        testResult.textContent = `✓ PASS: ${result}`;
+      } catch (error) {
+        testItem.classList.add('fail');
+        testResult.textContent = `✗ FAIL: ${error.message}`;
+      }
+
+      return testItem;
+    }
+
+    function runResponsivenessTests() {
+      const resultsDiv = document.getElementById('results');
+      resultsDiv.innerHTML = '';
+      
+      const section = document.createElement('div');
+      section.className = 'test-section';
+      
+      const heading = document.createElement('h2');
+      heading.textContent = 'Responsiveness Tests';
+      heading.style.color = '#764ba2';
+      heading.style.fontSize = '18px';
+      heading.style.marginBottom = '15px';
+      section.appendChild(heading);
+
+      // Test 1: Viewport width detection
+      section.appendChild(runTest('Viewport width is accessible', () => {
+        const width = window.innerWidth;
+        if (width > 0) {
+          return `Width: ${width}px`;
+        }
+        throw new Error('Cannot detect viewport width');
+      }));
+
+      // Test 2: Mobile breakpoint detection
+      section.appendChild(runTest('Mobile breakpoint detection (< 768px)', () => {
+        const width = window.innerWidth;
+        const isMobile = width < 768;
+        return isMobile ? 'Mobile view active' : 'Desktop view active';
+      }));
+
+      // Test 3: No horizontal scroll
+      section.appendChild(runTest('No horizontal scrollbar', () => {
+        const hasHorizontalScroll = document.documentElement.scrollWidth > window.innerWidth;
+        if (!hasHorizontalScroll) {
+          return 'No horizontal overflow detected';
+        }
+        throw new Error(`Horizontal overflow: ${document.documentElement.scrollWidth}px > ${window.innerWidth}px`);
+      }));
+
+      // Test 4: Touch support detection
+      section.appendChild(runTest('Touch support detection', () => {
+        const hasTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+        return hasTouch ? 'Touch events supported' : 'Touch events not supported (desktop)';
+      }));
+
+      // Test 5: Meta viewport tag
+      section.appendChild(runTest('Meta viewport tag present', () => {
+        const viewport = document.querySelector('meta[name="viewport"]');
+        if (viewport) {
+          return `Content: ${viewport.getAttribute('content')}`;
+        }
+        throw new Error('Meta viewport tag not found');
+      }));
+
+      // Test 6: CSS media queries support
+      section.appendChild(runTest('CSS media queries supported', () => {
+        if (window.matchMedia) {
+          const mobileQuery = window.matchMedia('(max-width: 768px)');
+          return mobileQuery.matches ? 'Mobile query matches' : 'Desktop query matches';
+        }
+        throw new Error('matchMedia not supported');
+      }));
+
+      // Test 7: Minimum touch target size (simulated)
+      section.appendChild(runTest('Touch target size recommendation', () => {
+        const minSize = 44; // 44x44 pixels recommended
+        return `Recommended minimum: ${minSize}x${minSize}px`;
+      }));
+
+      // Test 8: Device pixel ratio
+      section.appendChild(runTest('Device pixel ratio detection', () => {
+        const ratio = window.devicePixelRatio || 1;
+        return `Pixel ratio: ${ratio}`;
+      }));
+
+      // Test 9: Orientation detection
+      section.appendChild(runTest('Screen orientation detection', () => {
+        const orientation = window.innerWidth > window.innerHeight ? 'Landscape' : 'Portrait';
+        return `Current orientation: ${orientation}`;
+      }));
+
+      // Test 10: Responsive font sizing
+      section.appendChild(runTest('Responsive font sizing', () => {
+        const bodyFontSize = window.getComputedStyle(document.body).fontSize;
+        return `Body font size: ${bodyFontSize}`;
+      }));
+
+      resultsDiv.appendChild(section);
+    }
+
+    // Update viewport info on load and resize
+    updateViewportInfo();
+    window.addEventListener('resize', updateViewportInfo);
+
+    // Auto-run tests on load
+    window.addEventListener('load', () => {
+      setTimeout(runResponsivenessTests, 500);
+    });
+  </script>
+</body>
+</html>

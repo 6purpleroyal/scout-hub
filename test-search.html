@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Engine Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #1a1a2e;
+            color: #eee;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            background: #16213e;
+            border-radius: 8px;
+        }
+        .test-result {
+            margin: 10px 0;
+            padding: 10px;
+            background: #0f3460;
+            border-radius: 4px;
+        }
+        .success { border-left: 4px solid #4caf50; }
+        .error { border-left: 4px solid #f44336; }
+        h2 { color: #667eea; }
+        pre { 
+            background: #0a0e27;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>Search Engine Test</h1>
+    <div id="test-results"></div>
+
+    <script src="scripts/data-loader.js"></script>
+    <script src="scripts/search.js"></script>
+    <script>
+        async function runTests() {
+            const resultsDiv = document.getElementById('test-results');
+            
+            // Initialize data loader
+            const dataLoader = new DataLoader();
+            await dataLoader.loadPlayers();
+            await dataLoader.loadTeams();
+            
+            // Initialize search engine
+            const searchEngine = new SearchEngine(dataLoader);
+            
+            // Test 1: Search for player by name
+            addTestSection('Test 1: Search for player by name (LeBron)');
+            const test1 = searchEngine.search('LeBron');
+            logResult('Players found', test1.players.length > 0, test1.players);
+            
+            // Test 2: Search for player by team
+            addTestSection('Test 2: Search for player by team (Lakers)');
+            const test2 = searchEngine.search('Lakers');
+            logResult('Players and teams found', test2.players.length > 0 || test2.teams.length > 0, test2);
+            
+            // Test 3: Search for player by position
+            addTestSection('Test 3: Search for player by position (Point Guard)');
+            const test3 = searchEngine.search('Point Guard');
+            logResult('Point guards found', test3.players.length > 0, test3.players);
+            
+            // Test 4: Search for team by name
+            addTestSection('Test 4: Search for team by name (Celtics)');
+            const test4 = searchEngine.search('Celtics');
+            logResult('Teams found', test4.teams.length > 0, test4.teams);
+            
+            // Test 5: Search for team by city
+            addTestSection('Test 5: Search for team by city (Los Angeles)');
+            const test5 = searchEngine.search('Los Angeles');
+            logResult('Teams found', test5.teams.length > 0, test5);
+            
+            // Test 6: Empty search
+            addTestSection('Test 6: Empty search');
+            const test6 = searchEngine.search('');
+            logResult('Empty results', test6.players.length === 0 && test6.teams.length === 0, test6);
+            
+            // Test 7: Case insensitive search
+            addTestSection('Test 7: Case insensitive search (lebron)');
+            const test7 = searchEngine.search('lebron');
+            logResult('Case insensitive works', test7.players.length > 0, test7.players);
+            
+            // Test 8: Grouped results
+            addTestSection('Test 8: Grouped results (Los)');
+            const test8 = searchEngine.search('Los');
+            logResult('Both players and teams returned', 
+                test8.players.length > 0 && test8.teams.length > 0, 
+                { playerCount: test8.players.length, teamCount: test8.teams.length });
+            
+            // Test 9: Result limiting (search for common term)
+            addTestSection('Test 9: Result limiting');
+            const test9 = searchEngine.searchPlayers('a');
+            logResult('Max 10 players returned', test9.length <= 10, { count: test9.length });
+            
+            function addTestSection(title) {
+                const section = document.createElement('div');
+                section.className = 'test-section';
+                section.innerHTML = `<h2>${title}</h2>`;
+                resultsDiv.appendChild(section);
+            }
+            
+            function logResult(description, success, data) {
+                const section = resultsDiv.lastElementChild;
+                const result = document.createElement('div');
+                result.className = `test-result ${success ? 'success' : 'error'}`;
+                result.innerHTML = `
+                    <strong>${success ? '✓' : '✗'} ${description}</strong>
+                    <pre>${JSON.stringify(data, null, 2)}</pre>
+                `;
+                section.appendChild(result);
+            }
+        }
+        
+        // Run tests when page loads
+        runTests();
+    </script>
+</body>
+</html>

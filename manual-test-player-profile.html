@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Player Profile Test</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <style>
+        body {
+            padding: 20px;
+        }
+        .test-controls {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: #1a1a2e;
+            padding: 15px;
+            border-radius: 8px;
+            z-index: 10000;
+        }
+        .test-controls button {
+            display: block;
+            width: 100%;
+            margin: 5px 0;
+            padding: 10px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        .test-controls button:hover {
+            background: #5568d3;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-controls">
+        <h3 style="color: white; margin: 0 0 10px 0;">Test Player Profiles</h3>
+        <button onclick="testPlayer('1')">Paul George</button>
+        <button onclick="testPlayer('2')">LeBron James</button>
+        <button onclick="testPlayer('3')">Stephen Curry</button>
+        <button onclick="testPlayer('4')">Giannis</button>
+        <button onclick="testPlayer('5')">Kevin Durant</button>
+        <button onclick="testPlayer('6')">Luka Doncic</button>
+        <button onclick="testPlayer('7')">Joel Embiid</button>
+        <button onclick="testPlayer('8')">Jayson Tatum</button>
+        <button onclick="testPlayer('9')">Nikola Jokic</button>
+        <button onclick="testPlayer('10')">Damian Lillard</button>
+    </div>
+
+    <!-- Player Profile Page -->
+    <div id="player-profile" class="page active">
+        <!-- Header -->
+        <div class="header">
+            <div class="header-top">
+                <button class="back-btn" onclick="alert('Back button clicked')">←</button>
+                <div class="search-container">
+                    <div class="search-icon">🔍</div>
+                    <input type="text" class="search-bar" placeholder="Search players..." id="profileSearchInput">
+                    <div class="search-results" id="profileSearchResults"></div>
+                </div>
+                <div class="action-icons">
+                    <span>♡</span>
+                    <span>↗</span>
+                </div>
+            </div>
+            <h1 class="player-name" id="playerName">Loading...</h1>
+            <div class="player-team" id="playerTeam">Loading...</div>
+        </div>
+
+        <!-- Hero Section -->
+        <div class="hero-section">
+            <div class="player-photo" id="playerPhoto">?</div>
+            <div class="vitals">
+                <div class="vital-item">
+                    <span>Height</span>
+                    <span id="playerHeight">-</span>
+                </div>
+                <div class="vital-item">
+                    <span>Weight</span>
+                    <span id="playerWeight">-</span>
+                </div>
+                <div class="vital-item">
+                    <span>Age</span>
+                    <span id="playerAge">-</span>
+                </div>
+                <div class="vital-item">
+                    <span>Wingspan</span>
+                    <span id="playerWingspan">-</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- KPI Cards -->
+        <div class="kpi-section">
+            <div class="kpi-card">
+                <div class="kpi-value" id="kpiPts">-</div>
+                <div class="kpi-label">PTS</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-value" id="kpiReb">-</div>
+                <div class="kpi-label">REB</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-value" id="kpiAst">-</div>
+                <div class="kpi-label">AST</div>
+            </div>
+        </div>
+
+        <!-- Tab Navigation -->
+        <div class="tab-nav">
+            <button class="tab-btn active" data-tab="overview">Overview</button>
+            <button class="tab-btn" data-tab="stats">Stats</button>
+            <button class="tab-btn" data-tab="video">Video</button>
+        </div>
+
+        <!-- Overview Tab -->
+        <div class="tab-content active" id="overview">
+            <div class="scouting-summary">
+                <h3>Scouting Summary</h3>
+                <p>Loading player bio...</p>
+            </div>
+        </div>
+
+        <!-- Stats Tab -->
+        <div class="tab-content" id="stats">
+            <div class="stats-grid">
+                <div class="stat-row">
+                    <span>Points</span>
+                    <span id="statPts">-</span>
+                </div>
+                <div class="stat-row">
+                    <span>Rebounds</span>
+                    <span id="statReb">-</span>
+                </div>
+                <div class="stat-row">
+                    <span>Assists</span>
+                    <span id="statAst">-</span>
+                </div>
+                <div class="stat-row">
+                    <span>Field Goal %</span>
+                    <span>-</span>
+                </div>
+                <div class="stat-row">
+                    <span>3-Point %</span>
+                    <span>-</span>
+                </div>
+                <div class="stat-row">
+                    <span>Free Throw %</span>
+                    <span>-</span>
+                </div>
+                <div class="stat-row">
+                    <span>Steals</span>
+                    <span>-</span>
+                </div>
+                <div class="stat-row">
+                    <span>Blocks</span>
+                    <span>-</span>
+                </div>
+                <div class="stat-row">
+                    <span>Turnovers</span>
+                    <span>-</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Video Tab -->
+        <div class="tab-content" id="video">
+            <div class="featured-video">
+                <div class="video-thumbnail">▶</div>
+                <div class="video-info">
+                    <h3 id="featuredVideoTitle">Loading...</h3>
+                    <p>12:45 • Featured Reel</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Load JavaScript modules -->
+    <script src="scripts/utils.js"></script>
+    <script src="scripts/data-loader.js"></script>
+    <script src="scripts/search.js"></script>
+    <script src="scripts/ui.js"></script>
+    
+    <script>
+        let dataLoader, uiManager;
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', async () => {
+            console.log('Initializing test...');
+            
+            dataLoader = new DataLoader();
+            await dataLoader.loadPlayers();
+            await dataLoader.loadTeams();
+            
+            uiManager = new UIManager(dataLoader);
+            
+            console.log('Data loaded:', {
+                players: dataLoader.getAllPlayers().length,
+                teams: dataLoader.getAllTeams().length
+            });
+            
+            // Load first player by default
+            testPlayer('1');
+            
+            // Set up tabs
+            setupTabs();
+        });
+
+        function testPlayer(playerId) {
+            console.log('Testing player:', playerId);
+            const player = dataLoader.getPlayerById(playerId);
+            
+            if (!player) {
+                alert('Player not found: ' + playerId);
+                return;
+            }
+            
+            console.log('Player data:', player);
+            uiManager.renderPlayerProfile(player);
+            console.log('Profile rendered for:', player.name);
+        }
+
+        function setupTabs() {
+            document.querySelectorAll('.tab-btn').forEach(button => {
+                button.addEventListener('click', () => {
+                    const parentPage = button.closest('.page');
+                    if (!parentPage) return;
+
+                    parentPage.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+                    parentPage.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+
+                    button.classList.add('active');
+                    const tabId = button.getAttribute('data-tab');
+                    const tabContent = document.getElementById(tabId);
+                    
+                    if (tabContent) {
+                        tabContent.classList.add('active');
+                    }
+                });
+            });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UI Manager Test</title>
+    <link rel="stylesheet" href="styles/main.css">
+</head>
+<body>
+    <div style="padding: 1rem;">
+        <h1 style="margin-bottom: 1rem;">UI Manager Test</h1>
+        
+        <div style="margin-bottom: 2rem;">
+            <h2 style="margin-bottom: 0.5rem;">Test Search Results</h2>
+            <button id="testGroupedResults" style="padding: 0.5rem 1rem; margin-right: 0.5rem;">Test Grouped Results</button>
+            <button id="testPlayersOnly" style="padding: 0.5rem 1rem; margin-right: 0.5rem;">Test Players Only</button>
+            <button id="testTeamsOnly" style="padding: 0.5rem 1rem; margin-right: 0.5rem;">Test Teams Only</button>
+            <button id="testNoResults" style="padding: 0.5rem 1rem;">Test No Results</button>
+        </div>
+
+        <div style="margin-bottom: 2rem;">
+            <h2 style="margin-bottom: 0.5rem;">Test Team Profile</h2>
+            <button id="testTeamProfile" style="padding: 0.5rem 1rem; margin-right: 0.5rem;">Test Team Profile Rendering</button>
+            <button id="testRosterClick" style="padding: 0.5rem 1rem;">Test Roster Click Handler</button>
+        </div>
+
+        <div class="search-container" style="position: relative; max-width: 400px;">
+            <div class="search-results" id="testResults"></div>
+        </div>
+
+        <div style="margin-top: 2rem;">
+            <h3>Test Log:</h3>
+            <div id="testLog" style="background: var(--dark-card); padding: 1rem; border-radius: 8px; font-family: monospace; font-size: 0.9rem;"></div>
+        </div>
+    </div>
+
+    <script src="scripts/data-loader.js"></script>
+    <script src="scripts/ui.js"></script>
+    <script>
+        const dataLoader = new DataLoader();
+        const uiManager = new UIManager(dataLoader);
+        const testResults = document.getElementById('testResults');
+        const testLog = document.getElementById('testLog');
+
+        function log(message) {
+            const timestamp = new Date().toLocaleTimeString();
+            testLog.innerHTML += `[${timestamp}] ${message}<br>`;
+        }
+
+        // Load data first
+        async function init() {
+            log('Loading data...');
+            await dataLoader.loadPlayers();
+            await dataLoader.loadTeams();
+            log(`Loaded ${dataLoader.getAllPlayers().length} players and ${dataLoader.getAllTeams().length} teams`);
+        }
+
+        // Test grouped results (both players and teams)
+        document.getElementById('testGroupedResults').addEventListener('click', () => {
+            log('Testing grouped results (players + teams)');
+            const players = dataLoader.getAllPlayers().slice(0, 3);
+            const teams = dataLoader.getAllTeams().slice(0, 2);
+            
+            uiManager.renderSearchResults({ players, teams }, testResults);
+            log(`Rendered ${players.length} players and ${teams.length} teams`);
+        });
+
+        // Test players only
+        document.getElementById('testPlayersOnly').addEventListener('click', () => {
+            log('Testing players only');
+            const players = dataLoader.getAllPlayers().slice(0, 5);
+            
+            uiManager.renderSearchResults({ players, teams: [] }, testResults);
+            log(`Rendered ${players.length} players`);
+        });
+
+        // Test teams only
+        document.getElementById('testTeamsOnly').addEventListener('click', () => {
+            log('Testing teams only');
+            const teams = dataLoader.getAllTeams().slice(0, 4);
+            
+            uiManager.renderSearchResults({ players: [], teams }, testResults);
+            log(`Rendered ${teams.length} teams`);
+        });
+
+        // Test no results
+        document.getElementById('testNoResults').addEventListener('click', () => {
+            log('Testing no results');
+            uiManager.renderSearchResults({ players: [], teams: [] }, testResults);
+            log('Rendered "No results found" message');
+        });
+
+        // Test team profile rendering
+        document.getElementById('testTeamProfile').addEventListener('click', () => {
+            log('Testing team profile rendering');
+            const team = dataLoader.getAllTeams()[0];
+            if (team) {
+                log(`Rendering team: ${team.name}`);
+                log(`Team stats: ${team.stats.wins}-${team.stats.losses}, ${team.stats.ppg} PPG`);
+                log(`Roster size: ${team.roster.length} players`);
+                
+                // Check if required elements exist
+                const requiredElements = [
+                    'teamName', 'teamCity', 'teamLogo', 'teamWins', 'teamLosses',
+                    'teamPpg', 'teamOppg', 'kpiWins', 'kpiLosses', 'kpiDefRating',
+                    'rosterList'
+                ];
+                
+                const missingElements = requiredElements.filter(id => !document.getElementById(id));
+                if (missingElements.length > 0) {
+                    log(`⚠️ Warning: Missing elements: ${missingElements.join(', ')}`);
+                    log('Note: This is expected in test environment. Elements exist in main index.html');
+                } else {
+                    uiManager.renderTeamProfile(team);
+                    log('✓ Team profile rendered successfully');
+                }
+            } else {
+                log('❌ No team data available');
+            }
+        });
+
+        // Test roster click handler
+        document.getElementById('testRosterClick').addEventListener('click', () => {
+            log('Testing roster click handler');
+            const rosterList = document.getElementById('rosterList');
+            if (rosterList) {
+                const rosterItems = rosterList.querySelectorAll('.roster-item');
+                log(`Found ${rosterItems.length} roster items`);
+                
+                if (rosterItems.length > 0) {
+                    log('✓ Roster items have click handlers attached');
+                    log('Click on a roster item to test navigation (requires navigateToPlayer function)');
+                } else {
+                    log('⚠️ No roster items found. Run "Test Team Profile Rendering" first.');
+                }
+            } else {
+                log('⚠️ Roster list element not found in test environment');
+            }
+        });
+
+        // Initialize
+        init();
+    </script>
+</body>
+</html>

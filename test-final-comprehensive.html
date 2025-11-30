@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Final Comprehensive Testing - Scout Hub</title>
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #0f0f23;
+      color: white;
+      padding: 20px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    h1 {
+      color: #667eea;
+      margin-bottom: 30px;
+    }
+    h2 {
+      color: #764ba2;
+      margin-top: 30px;
+      margin-bottom: 15px;
+    }
+    .test-section {
+      background: #1a1a2e;
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+    .test-case {
+      background: #16213e;
+      padding: 15px;
+      border-radius: 6px;
+      margin-bottom: 10px;
+      border-left: 4px solid #667eea;
+    }
+    .test-case.pass {
+      border-left-color: #48bb78;
+    }
+    .test-case.fail {
+      border-left-color: #e53e3e;
+    }
+    .test-name {
+      font-weight: bold;
+      margin-bottom: 8px;
+      color: #667eea;
+    }
+    .test-result {
+      font-size: 14px;
+      color: #888;
+    }
+    .test-result.pass {
+      color: #48bb78;
+    }
+    .test-result.fail {
+      color: #e53e3e;
+    }
+    button {
+      background: #667eea;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 16px;
+      margin: 10px 10px 10px 0;
+    }
+    button:hover {
+      background: #764ba2;
+    }
+    .summary {
+      background: #1a1a2e;
+      padding: 20px;
+      border-radius: 8px;
+      margin-top: 30px;
+      border: 2px solid #667eea;
+    }
+    .summary-stat {
+      display: inline-block;
+      margin-right: 30px;
+      font-size: 18px;
+    }
+    .summary-stat .label {
+      color: #888;
+    }
+    .summary-stat .value {
+      font-weight: bold;
+      font-size: 24px;
+    }
+    .summary-stat.pass .value {
+      color: #48bb78;
+    }
+    .summary-stat.fail .value {
+      color: #e53e3e;
+    }
+    pre {
+      background: #0f0f23;
+      padding: 10px;
+      border-radius: 4px;
+      overflow-x: auto;
+      font-size: 12px;
+    }
+  </style>
+</head>
+<body>
+  <h1>🏀 Scout Hub - Final Comprehensive Testing</h1>
+  
+  <div>
+    <button onclick="runAllTests()">Run All Tests</button>
+    <button onclick="clearResults()">Clear Results</button>
+  </div>
+
+  <div id="results"></div>
+  <div id="summary" class="summary" style="display: none;"></div>
+
+  <script src="scripts/data.js"></script>
+  <script src="scripts/data-loader.js"></script>
+  <script src="scripts/search.js"></script>
+  <script src="scripts/ui.js"></script>
+  <script src="scripts/utils.js"></script>
+
+  <script>
+    let testResults = [];
+    let dataLoader, searchEngine, uiManager;
+
+    // Test utilities
+    function assert(condition, message) {
+      if (!condition) {
+        throw new Error(message || 'Assertion failed');
+      }
+    }
+
+    function assertEqual(actual, expected, message) {
+      if (actual !== expected) {
+        throw new Error(message || `Expected ${expected}, got ${actual}`);
+      }
+    }
+
+    function assertContains(array, item, message) {
+      if (!array.includes(item)) {
+        throw new Error(message || `Array does not contain ${item}`);
+      }
+    }
+
+    function assertGreaterThan(actual, expected, message) {
+      if (actual <= expected) {
+        throw new Error(message || `Expected ${actual} to be greater than ${expected}`);
+      }
+    }
+
+    function assertLessThanOrEqual(actual, expected, message) {
+      if (actual > expected) {
+        throw new Error(message || `Expected ${actual} to be less than or equal to ${expected}`);
+      }
+    }
+
+    // Test runner
+    async function runTest(name, testFn) {
+      const testCase = document.createElement('div');
+      testCase.className = 'test-case';
+      
+      const testName = document.createElement('div');
+      testName.className = 'test-name';
+      testName.textContent = name;
+      testCase.appendChild(testName);
+      
+      const testResult = document.createElement('div');
+      testResult.className = 'test-result';
+      testCase.appendChild(testResult);
+
+      try {
+        await testFn();
+        testCase.classList.add('pass');
+        testResult.classList.add('pass');
+        testResult.textContent = '✓ PASS';
+        testResults.push({ name, passed: true });
+      } catch (error) {
+        testCase.classList.add('fail');
+        testResult.classList.add('fail');
+        testResult.textContent = `✗ FAIL: ${error.message}`;
+        testResults.push({ name, passed: false, error: error.message });
+      }
+
+      return testCase;
+    }
+
+    async function runTestSection(title, tests) {
+      const section = document.createElement('div');
+      section.className = 'test-section';
+      
+      const heading = document.createElement('h2');
+      heading.textContent = title;
+      section.appendChild(heading);
+
+      for (const [name, testFn] of tests) {
+        const testCase = await runTest(name, testFn);
+        section.appendChild(testCase);
+      }
+
+      return section;
+    }
+
+    // Initialize modules
+    async function initializeModules() {
+      dataLoader = new DataLoader();
+      await Promise.all([
+        dataLoader.loadPlayers(),
+        dataLoader.loadTeams()
+      ]);
+      searchEngine = new SearchEngine(dataLoader);
+      uiManager = new UIManager(dataLoader);
+    }
+
+    // Test Suites
+    async function testSearchScenarios() {
+      return runTestSection('1. Search Scenarios', [
+        ['Search for players by name', async () => {
+          const results = searchEngine.search('LeBron');
+          assert(results.players.length > 0, 'Should find players');
+          assert(results.players[0].name.includes('LeBron'), 'Should find LeBron James');
+        }],
+        
+        ['Search for players by team', async () => {
+          const results = searchEngine.search('Lakers');
+          assert(results.players.length > 0, 'Should find Lakers players');
+          assert(results.players.some(p => p.team.includes('Lakers')), 'Should include Lakers players');
+        }],
+        
+        ['Search for players by position', async () => {
+          const results = searchEngine.search('Point Guard');
+          assert(results.players.length > 0, 'Should find point guards');
+          assert(results.players.every(p => p.position.includes('Point Guard')), 'All results should be point guards');
+        }],
+        
+        ['Search for teams by name', async () => {
+          const results = searchEngine.search('Celtics');
+          assert(results.teams.length > 0, 'Should find teams');
+          assert(results.teams[0].name.includes('Celtics'), 'Should find Celtics');
+        }],
+        
+        ['Search for teams by city', async () => {
+          const results = searchEngine.search('Los Angeles');
+          assert(results.teams.length > 0, 'Should find LA teams');
+          assert(results.teams.some(t => t.city.includes('Los Angeles')), 'Should include LA teams');
+        }],
+        
+        ['Mixed search results (players and teams)', async () => {
+          const results = searchEngine.search('Los Angeles');
+          assert(results.players.length > 0, 'Should find players');
+          assert(results.teams.length > 0, 'Should find teams');
+        }],
+        
+        ['Empty search query returns empty results', async () => {
+          const results = searchEngine.search('');
+          assertEqual(results.players.length, 0, 'Should return no players');
+          assertEqual(results.teams.length, 0, 'Should return no teams');
+        }],
+        
+        ['Search with no matches', async () => {
+          const results = searchEngine.search('XYZ123NonExistent');
+          assertEqual(results.players.length, 0, 'Should return no players');
+          assertEqual(results.teams.length, 0, 'Should return no teams');
+        }],
+        
+        ['Case-insensitive search', async () => {
+          const results1 = searchEngine.search('lebron');
+          const results2 = searchEngine.search('LEBRON');
+          const results3 = searchEngine.search('LeBron');
+          assert(results1.players.length > 0, 'Lowercase should work');
+          assert(results2.players.length > 0, 'Uppercase should work');
+          assert(results3.players.length > 0, 'Mixed case should work');
+        }],
+        
+        ['Result limiting (max 10 per category)', async () => {
+          const results = searchEngine.search('a'); // Common letter
+          assertLessThanOrEqual(results.players.length, 10, 'Should limit players to 10');
+          assertLessThanOrEqual(results.teams.length, 10, 'Should limit teams to 10');
+        }]
+      ]);
+    }
+
+    async function testNavigation() {
+      return runTestSection('2. Navigation Between Pages', [
+        ['DataLoader can retrieve player by ID', async () => {
+          const player = dataLoader.getPlayerById('1');
+          assert(player !== null, 'Should find player');
+          assertEqual(player.name, 'Paul George', 'Should be correct player');
+        }],
+        
+        ['DataLoader can retrieve team by ID', async () => {
+          const team = dataLoader.getTeamById('1');
+          assert(team !== null, 'Should find team');
+          assertEqual(team.name, 'Clippers', 'Should be correct team');
+        }],
+        
+        ['DataLoader returns null for invalid player ID', async () => {
+          const player = dataLoader.getPlayerById('999');
+          assertEqual(player, null, 'Should return null for invalid ID');
+        }],
+        
+        ['DataLoader returns null for invalid team ID', async () => {
+          const team = dataLoader.getTeamById('999');
+          assertEqual(team, null, 'Should return null for invalid ID');
+        }],
+        
+        ['All players have valid team references', async () => {
+          const players = dataLoader.getAllPlayers();
+          for (const player of players) {
+            const team = dataLoader.getTeamById(player.teamId);
+            assert(team !== null, `Player ${player.name} should have valid team reference`);
+          }
+        }],
+        
+        ['All teams have valid roster references', async () => {
+          const teams = dataLoader.getAllTeams();
+          for (const team of teams) {
+            for (const playerId of team.roster) {
+              const player = dataLoader.getPlayerById(playerId);
+              assert(player !== null, `Team ${team.name} should have valid player ${playerId} in roster`);
+            }
+          }
+        }]
+      ]);
+    }
+
+    async function testErrorScenarios() {
+      return runTestSection('3. Error Scenarios', [
+        ['Search handles null query gracefully', async () => {
+          const results = searchEngine.search(null);
+          assertEqual(results.players.length, 0, 'Should return empty results');
+          assertEqual(results.teams.length, 0, 'Should return empty results');
+        }],
+        
+        ['Search handles undefined query gracefully', async () => {
+          const results = searchEngine.search(undefined);
+          assertEqual(results.players.length, 0, 'Should return empty results');
+          assertEqual(results.teams.length, 0, 'Should return empty results');
+        }],
+        
+        ['Search handles whitespace-only query', async () => {
+          const results = searchEngine.search('   ');
+          assertEqual(results.players.length, 0, 'Should return empty results');
+          assertEqual(results.teams.length, 0, 'Should return empty results');
+        }],
+        
+        ['DataLoader handles missing player ID', async () => {
+          const player = dataLoader.getPlayerById('');
+          assertEqual(player, null, 'Should return null');
+        }],
+        
+        ['DataLoader handles missing team ID', async () => {
+          const team = dataLoader.getTeamById('');
+          assertEqual(team, null, 'Should return null');
+        }],
+        
+        ['All players have required fields', async () => {
+          const players = dataLoader.getAllPlayers();
+          for (const player of players) {
+            assert(player.id, 'Player should have ID');
+            assert(player.name, 'Player should have name');
+            assert(player.team, 'Player should have team');
+            assert(player.position, 'Player should have position');
+            assert(player.stats, 'Player should have stats');
+          }
+        }],
+        
+        ['All teams have required fields', async () => {
+          const teams = dataLoader.getAllTeams();
+          for (const team of teams) {
+            assert(team.id, 'Team should have ID');
+            assert(team.name, 'Team should have name');
+            assert(team.city, 'Team should have city');
+            assert(team.stats, 'Team should have stats');
+            assert(Array.isArray(team.roster), 'Team should have roster array');
+          }
+        }]
+      ]);
+    }
+
+    async function testUIRendering() {
+      return runTestSection('4. UI Rendering', [
+        ['Render player card includes all required fields', async () => {
+          const player = dataLoader.getPlayerById('1');
+          const card = uiManager.renderPlayerCard(player);
+          
+          assert(card.textContent.includes(player.name), 'Should include player name');
+          assert(card.textContent.includes(player.team), 'Should include team');
+          assert(card.textContent.includes(player.position), 'Should include position');
+          assert(card.textContent.includes(player.stats.pts.toString()), 'Should include points');
+        }],
+        
+        ['Render team card includes all required fields', async () => {
+          const team = dataLoader.getTeamById('1');
+          const card = uiManager.renderTeamCard(team);
+          
+          assert(card.textContent.includes(team.name), 'Should include team name');
+          assert(card.textContent.includes(team.city), 'Should include city');
+          assert(card.textContent.includes(team.stats.wins.toString()), 'Should include wins');
+          assert(card.textContent.includes(team.stats.losses.toString()), 'Should include losses');
+        }],
+        
+        ['Render search results with no results shows message', async () => {
+          const container = document.createElement('div');
+          uiManager.renderSearchResults({ players: [], teams: [] }, container);
+          
+          assert(container.textContent.includes('No results found'), 'Should show no results message');
+        }],
+        
+        ['Render search results with players shows category header', async () => {
+          const container = document.createElement('div');
+          const players = [dataLoader.getPlayerById('1')];
+          uiManager.renderSearchResults({ players, teams: [] }, container);
+          
+          assert(container.textContent.includes('Players'), 'Should show Players header');
+        }],
+        
+        ['Render search results with teams shows category header', async () => {
+          const container = document.createElement('div');
+          const teams = [dataLoader.getTeamById('1')];
+          uiManager.renderSearchResults({ players: [], teams }, container);
+          
+          assert(container.textContent.includes('Teams'), 'Should show Teams header');
+        }],
+        
+        ['Render search results with both shows both headers', async () => {
+          const container = document.createElement('div');
+          const players = [dataLoader.getPlayerById('1')];
+          const teams = [dataLoader.getTeamById('1')];
+          uiManager.renderSearchResults({ players, teams }, container);
+          
+          assert(container.textContent.includes('Players'), 'Should show Players header');
+          assert(container.textContent.includes('Teams'), 'Should show Teams header');
+        }],
+        
+        ['Player cards have data attributes for navigation', async () => {
+          const player = dataLoader.getPlayerById('1');
+          const card = uiManager.renderPlayerCard(player);
+          
+          assertEqual(card.getAttribute('data-player-id'), '1', 'Should have player ID attribute');
+          assertEqual(card.getAttribute('data-type'), 'player', 'Should have type attribute');
+        }],
+        
+        ['Team cards have data attributes for navigation', async () => {
+          const team = dataLoader.getTeamById('1');
+          const card = uiManager.renderTeamCard(team);
+          
+          assertEqual(card.getAttribute('data-team-id'), '1', 'Should have team ID attribute');
+          assertEqual(card.getAttribute('data-type'), 'team', 'Should have type attribute');
+        }]
+      ]);
+    }
+
+    async function testDataIntegrity() {
+      return runTestSection('5. Data Integrity', [
+        ['All player IDs are unique', async () => {
+          const players = dataLoader.getAllPlayers();
+          const ids = players.map(p => p.id);
+          const uniqueIds = new Set(ids);
+          assertEqual(ids.length, uniqueIds.size, 'All player IDs should be unique');
+        }],
+        
+        ['All team IDs are unique', async () => {
+          const teams = dataLoader.getAllTeams();
+          const ids = teams.map(t => t.id);
+          const uniqueIds = new Set(ids);
+          assertEqual(ids.length, uniqueIds.size, 'All team IDs should be unique');
+        }],
+        
+        ['Player stats are valid numbers', async () => {
+          const players = dataLoader.getAllPlayers();
+          for (const player of players) {
+            assert(typeof player.stats.pts === 'number', 'Points should be number');
+            assert(typeof player.stats.reb === 'number', 'Rebounds should be number');
+            assert(typeof player.stats.ast === 'number', 'Assists should be number');
+            assert(player.stats.pts >= 0, 'Points should be non-negative');
+          }
+        }],
+        
+        ['Team stats are valid numbers', async () => {
+          const teams = dataLoader.getAllTeams();
+          for (const team of teams) {
+            assert(typeof team.stats.wins === 'number', 'Wins should be number');
+            assert(typeof team.stats.losses === 'number', 'Losses should be number');
+            assert(typeof team.stats.ppg === 'number', 'PPG should be number');
+            assert(team.stats.wins >= 0, 'Wins should be non-negative');
+          }
+        }],
+        
+        ['Player-team relationships are bidirectional', async () => {
+          const players = dataLoader.getAllPlayers();
+          for (const player of players) {
+            const team = dataLoader.getTeamById(player.teamId);
+            if (team) {
+              assert(team.roster.includes(player.id), 
+                `Team ${team.name} roster should include player ${player.name}`);
+            }
+          }
+        }],
+        
+        ['Minimum data requirements met', async () => {
+          const players = dataLoader.getAllPlayers();
+          const teams = dataLoader.getAllTeams();
+          assertGreaterThan(players.length, 9, 'Should have at least 10 players');
+          assertGreaterThan(teams.length, 4, 'Should have at least 5 teams');
+        }]
+      ]);
+    }
+
+    async function testPerformance() {
+      return runTestSection('6. Performance Tests', [
+        ['Search completes quickly', async () => {
+          const start = performance.now();
+          searchEngine.search('a');
+          const end = performance.now();
+          const duration = end - start;
+          assert(duration < 100, `Search should complete in < 100ms (took ${duration.toFixed(2)}ms)`);
+        }],
+        
+        ['Multiple searches complete quickly', async () => {
+          const start = performance.now();
+          for (let i = 0; i < 10; i++) {
+            searchEngine.search('test' + i);
+          }
+          const end = performance.now();
+          const duration = end - start;
+          assert(duration < 500, `10 searches should complete in < 500ms (took ${duration.toFixed(2)}ms)`);
+        }],
+        
+        ['Rendering search results is fast', async () => {
+          const container = document.createElement('div');
+          const results = searchEngine.search('a');
+          const start = performance.now();
+          uiManager.renderSearchResults(results, container);
+          const end = performance.now();
+          const duration = end - start;
+          assert(duration < 50, `Rendering should complete in < 50ms (took ${duration.toFixed(2)}ms)`);
+        }],
+        
+        ['Data retrieval is instant (cached)', async () => {
+          const start = performance.now();
+          for (let i = 0; i < 100; i++) {
+            dataLoader.getPlayerById('1');
+          }
+          const end = performance.now();
+          const duration = end - start;
+          assert(duration < 10, `100 retrievals should complete in < 10ms (took ${duration.toFixed(2)}ms)`);
+        }]
+      ]);
+    }
+
+    async function testUtilities() {
+      return runTestSection('7. Utility Functions', [
+        ['Debounce function exists', async () => {
+          assert(typeof debounce === 'function', 'Debounce should be a function');
+        }],
+        
+        ['Debounce delays execution', async () => {
+          let called = false;
+          const debouncedFn = debounce(() => { called = true; }, 100);
+          
+          debouncedFn();
+          assertEqual(called, false, 'Should not call immediately');
+          
+          await new Promise(resolve => setTimeout(resolve, 150));
+          assertEqual(called, true, 'Should call after delay');
+        }],
+        
+        ['Debounce cancels previous calls', async () => {
+          let callCount = 0;
+          const debouncedFn = debounce(() => { callCount++; }, 100);
+          
+          debouncedFn();
+          debouncedFn();
+          debouncedFn();
+          
+          await new Promise(resolve => setTimeout(resolve, 150));
+          assertEqual(callCount, 1, 'Should only call once');
+        }]
+      ]);
+    }
+
+    // Main test runner
+    async function runAllTests() {
+      testResults = [];
+      const resultsDiv = document.getElementById('results');
+      resultsDiv.innerHTML = '<p style="color: #667eea;">Initializing modules...</p>';
+
+      try {
+        await initializeModules();
+        resultsDiv.innerHTML = '<p style="color: #48bb78;">✓ Modules initialized successfully</p>';
+
+        // Run all test suites
+        resultsDiv.appendChild(await testSearchScenarios());
+        resultsDiv.appendChild(await testNavigation());
+        resultsDiv.appendChild(await testErrorScenarios());
+        resultsDiv.appendChild(await testUIRendering());
+        resultsDiv.appendChild(await testDataIntegrity());
+        resultsDiv.appendChild(await testPerformance());
+        resultsDiv.appendChild(await testUtilities());
+
+        // Show summary
+        showSummary();
+      } catch (error) {
+        resultsDiv.innerHTML = `<p style="color: #e53e3e;">✗ Failed to initialize: ${error.message}</p>`;
+      }
+    }
+
+    function showSummary() {
+      const summaryDiv = document.getElementById('summary');
+      const passed = testResults.filter(r => r.passed).length;
+      const failed = testResults.filter(r => !r.passed).length;
+      const total = testResults.length;
+      const passRate = ((passed / total) * 100).toFixed(1);
+
+      summaryDiv.innerHTML = `
+        <h2>Test Summary</h2>
+        <div class="summary-stat">
+          <div class="label">Total Tests</div>
+          <div class="value">${total}</div>
+        </div>
+        <div class="summary-stat pass">
+          <div class="label">Passed</div>
+          <div class="value">${passed}</div>
+        </div>
+        <div class="summary-stat fail">
+          <div class="label">Failed</div>
+          <div class="value">${failed}</div>
+        </div>
+        <div class="summary-stat">
+          <div class="label">Pass Rate</div>
+          <div class="value">${passRate}%</div>
+        </div>
+      `;
+      summaryDiv.style.display = 'block';
+    }
+
+    function clearResults() {
+      document.getElementById('results').innerHTML = '';
+      document.getElementById('summary').style.display = 'none';
+      testResults = [];
+    }
+  </script>
+</body>
+</html>

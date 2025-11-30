@@ -1,0 +1,155 @@
+[
+  {
+    "id": "1",
+    "name": "Clippers",
+    "city": "Los Angeles",
+    "conference": "Western",
+    "division": "Pacific",
+    "stats": {
+      "wins": 44,
+      "losses": 28,
+      "ppg": 115.6,
+      "oppg": 111.2,
+      "def_rating": 112.5
+    },
+    "roster": ["1", "12"],
+    "color": "#C8102E",
+    "logo": "LAC"
+  },
+  {
+    "id": "2",
+    "name": "Lakers",
+    "city": "Los Angeles",
+    "conference": "Western",
+    "division": "Pacific",
+    "stats": {
+      "wins": 47,
+      "losses": 35,
+      "ppg": 117.3,
+      "oppg": 115.8,
+      "def_rating": 115.2
+    },
+    "roster": ["2", "11"],
+    "color": "#552583",
+    "logo": "LAL"
+  },
+  {
+    "id": "3",
+    "name": "Warriors",
+    "city": "Golden State",
+    "conference": "Western",
+    "division": "Pacific",
+    "stats": {
+      "wins": 46,
+      "losses": 36,
+      "ppg": 118.0,
+      "oppg": 116.3,
+      "def_rating": 114.8
+    },
+    "roster": ["3", "18"],
+    "color": "#1D428A",
+    "logo": "GSW"
+  },
+  {
+    "id": "4",
+    "name": "Bucks",
+    "city": "Milwaukee",
+    "conference": "Eastern",
+    "division": "Central",
+    "stats": {
+      "wins": 49,
+      "losses": 33,
+      "ppg": 119.1,
+      "oppg": 114.5,
+      "def_rating": 113.2
+    },
+    "roster": ["4", "10"],
+    "color": "#00471B",
+    "logo": "MIL"
+  },
+  {
+    "id": "5",
+    "name": "Suns",
+    "city": "Phoenix",
+    "conference": "Western",
+    "division": "Pacific",
+    "stats": {
+      "wins": 49,
+      "losses": 33,
+      "ppg": 116.2,
+      "oppg": 113.5,
+      "def_rating": 112.8
+    },
+    "roster": ["5", "13"],
+    "color": "#1D1160",
+    "logo": "PHX"
+  },
+  {
+    "id": "6",
+    "name": "Mavericks",
+    "city": "Dallas",
+    "conference": "Western",
+    "division": "Southwest",
+    "stats": {
+      "wins": 50,
+      "losses": 32,
+      "ppg": 117.9,
+      "oppg": 114.6,
+      "def_rating": 113.5
+    },
+    "roster": ["6", "14"],
+    "color": "#00538C",
+    "logo": "DAL"
+  },
+  {
+    "id": "7",
+    "name": "76ers",
+    "city": "Philadelphia",
+    "conference": "Eastern",
+    "division": "Atlantic",
+    "stats": {
+      "wins": 47,
+      "losses": 35,
+      "ppg": 114.6,
+      "oppg": 111.8,
+      "def_rating": 111.2
+    },
+    "roster": ["7", "17"],
+    "color": "#006BB6",
+    "logo": "PHI"
+  },
+  {
+    "id": "8",
+    "name": "Celtics",
+    "city": "Boston",
+    "conference": "Eastern",
+    "division": "Atlantic",
+    "stats": {
+      "wins": 64,
+      "losses": 18,
+      "ppg": 120.6,
+      "oppg": 110.6,
+      "def_rating": 110.6
+    },
+    "roster": ["8", "15"],
+    "color": "#007A33",
+    "logo": "BOS"
+  },
+  {
+    "id": "9",
+    "name": "Nuggets",
+    "city": "Denver",
+    "conference": "Western",
+    "division": "Northwest",
+    "stats": {
+      "wins": 57,
+      "losses": 25,
+      "ppg": 114.9,
+      "oppg": 110.9,
+      "def_rating": 111.5
+    },
+    "roster": ["9", "16"],
+    "color": "#0E2240",
+    "logo": "DEN"
+  }
+]

@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test App Navigation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #1a1a2e;
+            color: white;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 20px;
+            background: #16213e;
+            border-radius: 8px;
+        }
+        button {
+            margin: 5px;
+            padding: 10px 20px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #5568d3;
+        }
+        .status {
+            margin-top: 10px;
+            padding: 10px;
+            background: #0f3460;
+            border-radius: 4px;
+        }
+        .success { color: #68d391; }
+        .error { color: #e53e3e; }
+    </style>
+</head>
+<body>
+    <h1>App Navigation System Test</h1>
+
+    <div class="test-section">
+        <h2>Test 1: App Initialization</h2>
+        <button onclick="testInit()">Test Init</button>
+        <div id="initStatus" class="status"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>Test 2: Navigate to Player</h2>
+        <button onclick="testNavigateToPlayer()">Navigate to Player 1</button>
+        <div id="playerNavStatus" class="status"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>Test 3: Navigate to Team</h2>
+        <button onclick="testNavigateToTeam()">Navigate to Team 1</button>
+        <div id="teamNavStatus" class="status"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>Test 4: Show Page</h2>
+        <button onclick="testShowPage('homepage')">Show Homepage</button>
+        <button onclick="testShowPage('player-profile')">Show Player Profile</button>
+        <button onclick="testShowPage('team-profile')">Show Team Profile</button>
+        <div id="pageStatus" class="status"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>Test 5: Search Functionality</h2>
+        <input type="text" id="testSearch" placeholder="Type to search..." style="padding: 10px; width: 300px;">
+        <div id="searchStatus" class="status"></div>
+    </div>
+
+    <!-- Load JavaScript modules -->
+    <script src="scripts/utils.js"></script>
+    <script src="scripts/data-loader.js"></script>
+    <script src="scripts/search.js"></script>
+    <script src="scripts/ui.js"></script>
+    <script src="scripts/app.js"></script>
+
+    <script>
+        let testApp = null;
+
+        async function testInit() {
+            const status = document.getElementById('initStatus');
+            try {
+                testApp = new App();
+                await testApp.init();
+                
+                if (testApp.initialized) {
+                    status.innerHTML = '<span class="success">✓ App initialized successfully</span>';
+                    status.innerHTML += '<br>Players loaded: ' + testApp.dataLoader.getAllPlayers().length;
+                    status.innerHTML += '<br>Teams loaded: ' + testApp.dataLoader.getAllTeams().length;
+                } else {
+                    status.innerHTML = '<span class="error">✗ App failed to initialize</span>';
+                }
+            } catch (error) {
+                status.innerHTML = '<span class="error">✗ Error: ' + error.message + '</span>';
+            }
+        }
+
+        async function testNavigateToPlayer() {
+            const status = document.getElementById('playerNavStatus');
+            try {
+                if (!testApp) {
+                    await testInit();
+                }
+                
+                testApp.navigateToPlayer('1');
+                
+                // Check if player profile page is active
+                const playerPage = document.getElementById('player-profile');
+                if (playerPage && playerPage.classList.contains('active')) {
+                    status.innerHTML = '<span class="success">✓ Successfully navigated to player profile</span>';
+                } else {
+                    status.innerHTML = '<span class="error">✗ Failed to navigate to player profile</span>';
+                }
+            } catch (error) {
+                status.innerHTML = '<span class="error">✗ Error: ' + error.message + '</span>';
+            }
+        }
+
+        async function testNavigateToTeam() {
+            const status = document.getElementById('teamNavStatus');
+            try {
+                if (!testApp) {
+                    await testInit();
+                }
+                
+                testApp.navigateToTeam('1');
+                
+                // Check if team profile page is active
+                const teamPage = document.getElementById('team-profile');
+                if (teamPage && teamPage.classList.contains('active')) {
+                    status.innerHTML = '<span class="success">✓ Successfully navigated to team profile</span>';
+                } else {
+                    status.innerHTML = '<span class="error">✗ Failed to navigate to team profile</span>';
+                }
+            } catch (error) {
+                status.innerHTML = '<span class="error">✗ Error: ' + error.message + '</span>';
+            }
+        }
+
+        async function testShowPage(pageId) {
+            const status = document.getElementById('pageStatus');
+            try {
+                if (!testApp) {
+                    await testInit();
+                }
+                
+                testApp.showPage(pageId);
+                
+                // Check if the page is active
+                const page = document.getElementById(pageId);
+                if (page && page.classList.contains('active')) {
+                    status.innerHTML = '<span class="success">✓ Successfully showed page: ' + pageId + '</span>';
+                } else {
+                    status.innerHTML = '<span class="error">✗ Failed to show page: ' + pageId + '</span>';
+                }
+            } catch (error) {
+                status.innerHTML = '<span class="error">✗ Error: ' + error.message + '</span>';
+            }
+        }
+
+        // Test search with debouncing
+        document.getElementById('testSearch').addEventListener('input', async (e) => {
+            const status = document.getElementById('searchStatus');
+            try {
+                if (!testApp) {
+                    await testInit();
+                }
+                
+                const query = e.target.value;
+                if (query.trim() === '') {
+                    status.innerHTML = 'Type to search...';
+                    return;
+                }
+                
+                const results = testApp.searchEngine.search(query);
+                status.innerHTML = `Found ${results.players.length} players and ${results.teams.length} teams`;
+            } catch (error) {
+                status.innerHTML = '<span class="error">✗ Error: ' + error.message + '</span>';
+            }
+        });
+
+        // Auto-initialize on load
+        window.addEventListener('load', async () => {
+            console.log('Test page loaded, initializing app...');
+            await testInit();
+        });
+    </script>
+</body>
+</html>

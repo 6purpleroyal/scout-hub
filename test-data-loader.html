@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Loader Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #1a1a2e;
+            color: white;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            background: #16213e;
+            border-radius: 8px;
+        }
+        .success { color: #68d391; }
+        .error { color: #e53e3e; }
+        button {
+            padding: 10px 20px;
+            margin: 5px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #5568d3;
+        }
+        pre {
+            background: #0f1419;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>Data Loader Test Suite</h1>
+    
+    <div class="test-section">
+        <h2>Test 1: Load Players</h2>
+        <button onclick="testLoadPlayers()">Run Test</button>
+        <div id="test1-result"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>Test 2: Load Teams</h2>
+        <button onclick="testLoadTeams()">Run Test</button>
+        <div id="test2-result"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>Test 3: Get Player By ID</h2>
+        <button onclick="testGetPlayerById()">Run Test</button>
+        <div id="test3-result"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>Test 4: Get Team By ID</h2>
+        <button onclick="testGetTeamById()">Run Test</button>
+        <div id="test4-result"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>Test 5: Get All Players</h2>
+        <button onclick="testGetAllPlayers()">Run Test</button>
+        <div id="test5-result"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>Test 6: Get All Teams</h2>
+        <button onclick="testGetAllTeams()">Run Test</button>
+        <div id="test6-result"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>Test 7: Caching (Load Players Twice)</h2>
+        <button onclick="testCaching()">Run Test</button>
+        <div id="test7-result"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>Test 8: Error Handling (Invalid File)</h2>
+        <button onclick="testErrorHandling()">Run Test</button>
+        <div id="test8-result"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>Run All Tests</h2>
+        <button onclick="runAllTests()">Run All Tests</button>
+    </div>
+
+    <script src="scripts/data-loader.js"></script>
+    <script>
+        const dataLoader = new DataLoader();
+
+        async function testLoadPlayers() {
+            const result = document.getElementById('test1-result');
+            try {
+                const players = await dataLoader.loadPlayers();
+                if (players && players.length > 0) {
+                    result.innerHTML = `<p class="success">✓ Success: Loaded ${players.length} players</p>
+                                       <pre>${JSON.stringify(players[0], null, 2)}</pre>`;
+                } else {
+                    result.innerHTML = `<p class="error">✗ Failed: No players loaded</p>`;
+                }
+            } catch (error) {
+                result.innerHTML = `<p class="error">✗ Error: ${error.message}</p>`;
+            }
+        }
+
+        async function testLoadTeams() {
+            const result = document.getElementById('test2-result');
+            try {
+                const teams = await dataLoader.loadTeams();
+                if (teams && teams.length > 0) {
+                    result.innerHTML = `<p class="success">✓ Success: Loaded ${teams.length} teams</p>
+                                       <pre>${JSON.stringify(teams[0], null, 2)}</pre>`;
+                } else {
+                    result.innerHTML = `<p class="error">✗ Failed: No teams loaded</p>`;
+                }
+            } catch (error) {
+                result.innerHTML = `<p class="error">✗ Error: ${error.message}</p>`;
+            }
+        }
+
+        async function testGetPlayerById() {
+            const result = document.getElementById('test3-result');
+            try {
+                await dataLoader.loadPlayers();
+                const player = dataLoader.getPlayerById('1');
+                if (player && player.name === 'Paul George') {
+                    result.innerHTML = `<p class="success">✓ Success: Found player ${player.name}</p>
+                                       <pre>${JSON.stringify(player, null, 2)}</pre>`;
+                } else {
+                    result.innerHTML = `<p class="error">✗ Failed: Player not found or incorrect</p>`;
+                }
+            } catch (error) {
+                result.innerHTML = `<p class="error">✗ Error: ${error.message}</p>`;
+            }
+        }
+
+        async function testGetTeamById() {
+            const result = document.getElementById('test4-result');
+            try {
+                await dataLoader.loadTeams();
+                const team = dataLoader.getTeamById('1');
+                if (team && team.name === 'Clippers') {
+                    result.innerHTML = `<p class="success">✓ Success: Found team ${team.name}</p>
+                                       <pre>${JSON.stringify(team, null, 2)}</pre>`;
+                } else {
+                    result.innerHTML = `<p class="error">✗ Failed: Team not found or incorrect</p>`;
+                }
+            } catch (error) {
+                result.innerHTML = `<p class="error">✗ Error: ${error.message}</p>`;
+            }
+        }
+
+        async function testGetAllPlayers() {
+            const result = document.getElementById('test5-result');
+            try {
+                await dataLoader.loadPlayers();
+                const players = dataLoader.getAllPlayers();
+                if (players && players.length === 10) {
+                    result.innerHTML = `<p class="success">✓ Success: Retrieved all ${players.length} players</p>`;
+                } else {
+                    result.innerHTML = `<p class="error">✗ Failed: Expected 10 players, got ${players ? players.length : 0}</p>`;
+                }
+            } catch (error) {
+                result.innerHTML = `<p class="error">✗ Error: ${error.message}</p>`;
+            }
+        }
+
+        async function testGetAllTeams() {
+            const result = document.getElementById('test6-result');
+            try {
+                await dataLoader.loadTeams();
+                const teams = dataLoader.getAllTeams();
+                if (teams && teams.length === 9) {
+                    result.innerHTML = `<p class="success">✓ Success: Retrieved all ${teams.length} teams</p>`;
+                } else {
+                    result.innerHTML = `<p class="error">✗ Failed: Expected 9 teams, got ${teams ? teams.length : 0}</p>`;
+                }
+            } catch (error) {
+                result.innerHTML = `<p class="error">✗ Error: ${error.message}</p>`;
+            }
+        }
+
+        async function testCaching() {
+            const result = document.getElementById('test7-result');
+            try {
+                const loader = new DataLoader();
+                const start1 = performance.now();
+                await loader.loadPlayers();
+                const time1 = performance.now() - start1;
+                
+                const start2 = performance.now();
+                await loader.loadPlayers();
+                const time2 = performance.now() - start2;
+                
+                if (time2 < time1 / 10) {
+                    result.innerHTML = `<p class="success">✓ Success: Caching works! First load: ${time1.toFixed(2)}ms, Second load: ${time2.toFixed(2)}ms</p>`;
+                } else {
+                    result.innerHTML = `<p class="error">✗ Warning: Caching may not be working optimally. First: ${time1.toFixed(2)}ms, Second: ${time2.toFixed(2)}ms</p>`;
+                }
+            } catch (error) {
+                result.innerHTML = `<p class="error">✗ Error: ${error.message}</p>`;
+            }
+        }
+
+        async function testErrorHandling() {
+            const result = document.getElementById('test8-result');
+            try {
+                const loader = new DataLoader();
+                // Try to load from a non-existent file by modifying the fetch
+                const originalFetch = window.fetch;
+                window.fetch = async (url) => {
+                    if (url.includes('players.json')) {
+                        throw new Error('Network error');
+                    }
+                    return originalFetch(url);
+                };
+                
+                const players = await loader.loadPlayers();
+                window.fetch = originalFetch;
+                
+                if (players.length === 0 && loader.getErrorMessage()) {
+                    result.innerHTML = `<p class="success">✓ Success: Error handled gracefully. Error message: "${loader.getErrorMessage()}"</p>`;
+                } else {
+                    result.innerHTML = `<p class="error">✗ Failed: Error not handled properly</p>`;
+                }
+            } catch (error) {
+                result.innerHTML = `<p class="error">✗ Unexpected error: ${error.message}</p>`;
+            }
+        }
+
+        async function runAllTests() {
+            await testLoadPlayers();
+            await testLoadTeams();
+            await testGetPlayerById();
+            await testGetTeamById();
+            await testGetAllPlayers();
+            await testGetAllTeams();
+            await testCaching();
+            await testErrorHandling();
+        }
+    </script>
+</body>
+</html>

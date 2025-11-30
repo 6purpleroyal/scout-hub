@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Utils Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #1a1a2e;
+            color: white;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            background: #16213e;
+            border-radius: 8px;
+        }
+        .success { color: #68d391; }
+        .error { color: #e53e3e; }
+        button {
+            padding: 10px 20px;
+            margin: 5px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #5568d3;
+        }
+        pre {
+            background: #0f1419;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>Utils Test Suite</h1>
+    
+    <div class="test-section">
+        <h2>Test 1: Debounce Function</h2>
+        <button onclick="testDebounce()">Run Test</button>
+        <div id="test1-result"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>Test 2: Capitalize Function</h2>
+        <button onclick="testCapitalize()">Run Test</button>
+        <div id="test2-result"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>Test 3: Format Number</h2>
+        <button onclick="testFormatNumber()">Run Test</button>
+        <div id="test3-result"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>Test 4: Truncate String</h2>
+        <button onclick="testTruncate()">Run Test</button>
+        <div id="test4-result"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>Test 5: Format Percentage</h2>
+        <button onclick="testFormatPercentage()">Run Test</button>
+        <div id="test5-result"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>Test 6: Get Initials</h2>
+        <button onclick="testGetInitials()">Run Test</button>
+        <div id="test6-result"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>Test 7: Matches Query</h2>
+        <button onclick="testMatchesQuery()">Run Test</button>
+        <div id="test7-result"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>Run All Tests</h2>
+        <button onclick="runAllTests()">Run All Tests</button>
+    </div>
+
+    <script src="scripts/utils.js"></script>
+    <script>
+        // Make functions available globally for onclick handlers
+        window.testDebounce = testDebounce;
+        window.testCapitalize = testCapitalize;
+        window.testFormatNumber = testFormatNumber;
+        window.testTruncate = testTruncate;
+        window.testFormatPercentage = testFormatPercentage;
+        window.testGetInitials = testGetInitials;
+        window.testMatchesQuery = testMatchesQuery;
+        window.runAllTests = runAllTests;
+
+        function testDebounce() {
+            const result = document.getElementById('test1-result');
+            let callCount = 0;
+            
+            const debouncedFunc = debounce(() => {
+                callCount++;
+            }, 100);
+            
+            // Call multiple times rapidly
+            debouncedFunc();
+            debouncedFunc();
+            debouncedFunc();
+            
+            // Check after delay
+            setTimeout(() => {
+                if (callCount === 1) {
+                    result.innerHTML = `<p class="success">✓ Success: Debounce called once after multiple rapid calls</p>`;
+                } else {
+                    result.innerHTML = `<p class="error">✗ Failed: Expected 1 call, got ${callCount}</p>`;
+                }
+            }, 200);
+        }
+
+        function testCapitalize() {
+            const result = document.getElementById('test2-result');
+            const tests = [
+                { input: 'hello', expected: 'Hello' },
+                { input: 'WORLD', expected: 'World' },
+                { input: 'jOhN', expected: 'John' },
+                { input: '', expected: '' },
+                { input: null, expected: '' }
+            ];
+            
+            let allPassed = true;
+            let output = '';
+            
+            tests.forEach(test => {
+                const actual = capitalize(test.input);
+                const passed = actual === test.expected;
+                allPassed = allPassed && passed;
+                output += `<div>${passed ? '✓' : '✗'} capitalize(${JSON.stringify(test.input)}) = "${actual}" (expected "${test.expected}")</div>`;
+            });
+            
+            result.innerHTML = `<p class="${allPassed ? 'success' : 'error'}">${allPassed ? '✓ All tests passed' : '✗ Some tests failed'}</p>${output}`;
+        }
+
+        function testFormatNumber() {
+            const result = document.getElementById('test3-result');
+            const tests = [
+                { input: 1000, expected: '1,000' },
+                { input: 1234567, expected: '1,234,567' },
+                { input: 100, expected: '100' },
+                { input: 0, expected: '0' },
+                { input: null, expected: '0' }
+            ];
+            
+            let allPassed = true;
+            let output = '';
+            
+            tests.forEach(test => {
+                const actual = formatNumber(test.input);
+                const passed = actual === test.expected;
+                allPassed = allPassed && passed;
+                output += `<div>${passed ? '✓' : '✗'} formatNumber(${test.input}) = "${actual}" (expected "${test.expected}")</div>`;
+            });
+            
+            result.innerHTML = `<p class="${allPassed ? 'success' : 'error'}">${allPassed ? '✓ All tests passed' : '✗ Some tests failed'}</p>${output}`;
+        }
+
+        function testTruncate() {
+            const result = document.getElementById('test4-result');
+            const longText = 'This is a very long string that should be truncated';
+            const tests = [
+                { input: [longText, 20], expected: 'This is a very lo...' },
+                { input: ['Short', 20], expected: 'Short' },
+                { input: ['', 10], expected: '' },
+                { input: [null, 10], expected: '' }
+            ];
+            
+            let allPassed = true;
+            let output = '';
+            
+            tests.forEach(test => {
+                const actual = truncate(...test.input);
+                const passed = actual === test.expected;
+                allPassed = allPassed && passed;
+                output += `<div>${passed ? '✓' : '✗'} truncate("${test.input[0]}", ${test.input[1]}) = "${actual}"</div>`;
+            });
+            
+            result.innerHTML = `<p class="${allPassed ? 'success' : 'error'}">${allPassed ? '✓ All tests passed' : '✗ Some tests failed'}</p>${output}`;
+        }
+
+        function testFormatPercentage() {
+            const result = document.getElementById('test5-result');
+            const tests = [
+                { input: [0.456, 1], expected: '45.6%' },
+                { input: [0.8, 0], expected: '80%' },
+                { input: [0.333, 2], expected: '33.30%' },
+                { input: [null, 1], expected: '0.0%' }
+            ];
+            
+            let allPassed = true;
+            let output = '';
+            
+            tests.forEach(test => {
+                const actual = formatPercentage(...test.input);
+                const passed = actual === test.expected;
+                allPassed = allPassed && passed;
+                output += `<div>${passed ? '✓' : '✗'} formatPercentage(${test.input[0]}, ${test.input[1]}) = "${actual}" (expected "${test.expected}")</div>`;
+            });
+            
+            result.innerHTML = `<p class="${allPassed ? 'success' : 'error'}">${allPassed ? '✓ All tests passed' : '✗ Some tests failed'}</p>${output}`;
+        }
+
+        function testGetInitials() {
+            const result = document.getElementById('test6-result');
+            const tests = [
+                { input: 'LeBron James', expected: 'LJ' },
+                { input: 'Stephen Curry', expected: 'SC' },
+                { input: 'Giannis', expected: 'G' },
+                { input: '', expected: '' },
+                { input: null, expected: '' }
+            ];
+            
+            let allPassed = true;
+            let output = '';
+            
+            tests.forEach(test => {
+                const actual = getInitials(test.input);
+                const passed = actual === test.expected;
+                allPassed = allPassed && passed;
+                output += `<div>${passed ? '✓' : '✗'} getInitials("${test.input}") = "${actual}" (expected "${test.expected}")</div>`;
+            });
+            
+            result.innerHTML = `<p class="${allPassed ? 'success' : 'error'}">${allPassed ? '✓ All tests passed' : '✗ Some tests failed'}</p>${output}`;
+        }
+
+        function testMatchesQuery() {
+            const result = document.getElementById('test7-result');
+            const tests = [
+                { input: ['LeBron James', 'lebron'], expected: true },
+                { input: ['Stephen Curry', 'curry'], expected: true },
+                { input: ['Lakers', 'lak'], expected: true },
+                { input: ['Celtics', 'warriors'], expected: false },
+                { input: ['', 'test'], expected: false },
+                { input: ['test', ''], expected: false }
+            ];
+            
+            let allPassed = true;
+            let output = '';
+            
+            tests.forEach(test => {
+                const actual = matchesQuery(...test.input);
+                const passed = actual === test.expected;
+                allPassed = allPassed && passed;
+                output += `<div>${passed ? '✓' : '✗'} matchesQuery("${test.input[0]}", "${test.input[1]}") = ${actual} (expected ${test.expected})</div>`;
+            });
+            
+            result.innerHTML = `<p class="${allPassed ? 'success' : 'error'}">${allPassed ? '✓ All tests passed' : '✗ Some tests failed'}</p>${output}`;
+        }
+
+        async function runAllTests() {
+            testDebounce();
+            testCapitalize();
+            testFormatNumber();
+            testTruncate();
+            testFormatPercentage();
+            testGetInitials();
+            testMatchesQuery();
+        }
+    </script>
+</body>
+</html>

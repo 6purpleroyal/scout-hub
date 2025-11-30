@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scout Hub | Basketball Talent Discovery</title>
+    <link rel="stylesheet" href="styles/main.css">
+</head>
+<body>
+    <!-- Homepage -->
+    <div id="homepage" class="page active">
+        <!-- Header -->
+        <div class="header">
+            <div class="nav">
+                <a href="#" class="logo">SCOUT HUB</a>
+                <div class="nav-links">
+                    <a href="#">Players</a>
+                    <a href="#">Teams</a>
+                    <a href="#">Stats</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Hero Section -->
+        <div class="hero">
+            <h1>Discover Basketball Talent</h1>
+            <p>Advanced scouting platform with detailed player analytics, performance metrics, and video highlights for scouts, coaches, and fans.</p>
+            
+            <!-- Search Bar -->
+            <div class="home-search-container">
+                <div class="home-search-icon">🔍</div>
+                <input type="text" class="home-search-bar" placeholder="Search players, teams, or stats..." id="homeSearchInput">
+                <div class="search-results" id="homeSearchResults"></div>
+            </div>
+
+            <a href="#featured" class="btn btn-primary">Explore Players</a>
+        </div>
+
+        <!-- Featured Players -->
+        <div class="featured-section" id="featured">
+            <div class="section-title">
+                <span>Featured Players</span>
+                <a href="#" class="view-all">View All</a>
+            </div>
+
+            <div class="players-grid" id="playersGrid">
+                <!-- Player cards will be populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Player Profile Page -->
+    <div id="player-profile" class="page">
+        <!-- Header -->
+        <div class="header">
+            <div class="header-top">
+                <button class="back-btn">←</button>
+                <div class="search-container">
+                    <div class="search-icon">🔍</div>
+                    <input type="text" class="search-bar" placeholder="Search players..." id="profileSearchInput">
+                    <div class="search-results" id="profileSearchResults"></div>
+                </div>
+                <div class="action-icons">
+                    <span>♡</span>
+                    <span>↗</span>
+                </div>
+            </div>
+            <h1 class="player-name" id="playerName">Paul George</h1>
+            <div class="player-team" id="playerTeam">LA Clippers • Small Forward</div>
+        </div>
+
+        <!-- Hero Section -->
+        <div class="hero-section">
+            <div class="player-photo" id="playerPhoto">PG</div>
+            <div class="vitals">
+                <div class="vital-item">
+                    <span>Height</span>
+                    <span id="playerHeight">6'8" (2.03m)</span>
+                </div>
+                <div class="vital-item">
+                    <span>Weight</span>
+                    <span id="playerWeight">220 lbs (100 kg)</span>
+                </div>
+                <div class="vital-item">
+                    <span>Age</span>
+                    <span id="playerAge">33</span>
+                </div>
+                <div class="vital-item">
+                    <span>Wingspan</span>
+                    <span id="playerWingspan">7'2" (2.18m)</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- KPI Cards -->
+        <div class="kpi-section">
+            <div class="kpi-card">
+                <div class="kpi-value" id="kpiPts">35.0</div>
+                <div class="kpi-label">PTS</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-value" id="kpiReb">6.5</div>
+                <div class="kpi-label">REB</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-value" id="kpiAst">3.5</div>
+                <div class="kpi-label">AST</div>
+            </div>
+        </div>
+
+        <!-- Tab Navigation -->
+        <div class="tab-nav">
+            <button class="tab-btn active" data-tab="overview">Overview</button>
+            <button class="tab-btn" data-tab="stats">Stats</button>
+            <button class="tab-btn" data-tab="video">Video</button>
+        </div>
+
+        <!-- Overview Tab -->
+        <div class="tab-content active" id="overview">
+            <div class="scouting-summary">
+                <h3>Scouting Summary</h3>
+                <p>A versatile two-way wing with elite scoring and defensive instincts. Known for a smooth handle and clutch performance.</p>
+            </div>
+
+            <div class="game-cards">
+                <div class="game-card">
+                    <h4>LAST GAME</h4>
+                    <div>vs Lakers</div>
+                    <div>W 120-118</div>
+                    <div>32 PTS, 7 REB, 5 AST</div>
+                </div>
+                <div class="game-card">
+                    <h4>NEXT GAME</h4>
+                    <div>vs Warriors</div>
+                    <div>Fri 10:30 PM</div>
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <button class="btn btn-primary">WATCH HIGHLIGHT REEL</button>
+                <button class="btn btn-secondary">ADD TO SHORTLIST</button>
+            </div>
+        </div>
+
+        <!-- Stats Tab -->
+        <div class="tab-content" id="stats">
+            <div class="stats-controls">
+                <select class="select">
+                    <option>2023-24 Season</option>
+                    <option>Career</option>
+                </select>
+                <select class="select">
+                    <option>Per Game</option>
+                    <option>Per 36 Min</option>
+                </select>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-row">
+                    <span>Points</span>
+                    <span id="statPts">35.0</span>
+                </div>
+                <div class="stat-row">
+                    <span>Rebounds</span>
+                    <span id="statReb">6.5</span>
+                </div>
+                <div class="stat-row">
+                    <span>Assists</span>
+                    <span id="statAst">3.5</span>
+                </div>
+                <div class="stat-row">
+                    <span>Field Goal %</span>
+                    <span>47.5%</span>
+                </div>
+                <div class="stat-row">
+                    <span>3-Point %</span>
+                    <span>38.2%</span>
+                </div>
+                <div class="stat-row">
+                    <span>Free Throw %</span>
+                    <span>87.3%</span>
+                </div>
+                <div class="stat-row">
+                    <span>Steals</span>
+                    <span>1.6</span>
+                </div>
+                <div class="stat-row">
+                    <span>Blocks</span>
+                    <span>0.4</span>
+                </div>
+                <div class="stat-row">
+                    <span>Turnovers</span>
+                    <span>2.5</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Video Tab -->
+        <div class="tab-content" id="video">
+            <div class="featured-video">
+                <div class="video-thumbnail">▶</div>
+                <div class="video-info">
+                    <h3 id="featuredVideoTitle">Paul George - 2024 Season Highlights</h3>
+                    <p>12:45 • Featured Reel</p>
+                </div>
+            </div>
+
+            <div class="video-filters">
+                <button class="filter-btn active">All</button>
+                <button class="filter-btn">Shooting</button>
+                <button class="filter-btn">Playmaking</button>
+                <button class="filter-btn">Defense</button>
+                <button class="filter-btn">Dunks</button>
+            </div>
+
+            <div class="video-grid">
+                <div class="video-item">
+                    <div class="video-item-thumb">▶</div>
+                    <div class="video-item-info">
+                        <div class="video-item-title">3-Point Shooting</div>
+                    </div>
+                </div>
+                <div class="video-item">
+                    <div class="video-item-thumb">▶</div>
+                    <div class="video-item-info">
+                        <div class="video-item-title">Elite Defense</div>
+                    </div>
+                </div>
+                <div class="video-item">
+                    <div class="video-item-thumb">▶</div>
+                    <div class="video-item-info">
+                        <div class="video-item-title">Playmaking</div>
+                    </div>
+                </div>
+                <div class="video-item">
+                    <div class="video-item-thumb">▶</div>
+                    <div class="video-item-info">
+                        <div class="video-item-title">Dunk Highlights</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Team Profile Page -->
+    <div id="team-profile" class="page">
+        <!-- Header -->
+        <div class="header">
+            <div class="header-top">
+                <button class="back-btn">←</button>
+                <div class="search-container">
+                    <div class="search-icon">🔍</div>
+                    <input type="text" class="search-bar" placeholder="Search teams..." id="teamProfileSearchInput">
+                    <div class="search-results" id="teamProfileSearchResults"></div>
+                </div>
+                <div class="action-icons">
+                    <span>♡</span>
+                    <span>↗</span>
+                </div>
+            </div>
+            <h1 class="player-name" id="teamName">LA Clippers</h1>
+            <div class="player-team" id="teamCity">Los Angeles • Western Conference</div>
+        </div>
+
+        <!-- Hero Section -->
+        <div class="hero-section">
+            <div class="player-photo" id="teamLogo">LAC</div>
+            <div class="vitals">
+                <div class="vital-item">
+                    <span>Wins</span>
+                    <span id="teamWins">44</span>
+                </div>
+                <div class="vital-item">
+                    <span>Losses</span>
+                    <span id="teamLosses">28</span>
+                </div>
+                <div class="vital-item">
+                    <span>PPG</span>
+                    <span id="teamPpg">115.6</span>
+                </div>
+                <div class="vital-item">
+                    <span>OPPG</span>
+                    <span id="teamOppg">111.2</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- KPI Cards -->
+        <div class="kpi-section">
+            <div class="kpi-card">
+                <div class="kpi-value" id="kpiWins">44</div>
+                <div class="kpi-label">WINS</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-value" id="kpiLosses">28</div>
+                <div class="kpi-label">LOSSES</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-value" id="kpiDefRating">112.5</div>
+                <div class="kpi-label">DEF RTG</div>
+            </div>
+        </div>
+
+        <!-- Tab Navigation -->
+        <div class="tab-nav">
+            <button class="tab-btn active" data-tab="team-overview">Overview</button>
+            <button class="tab-btn" data-tab="team-roster">Roster</button>
+            <button class="tab-btn" data-tab="team-stats">Stats</button>
+        </div>
+
+        <!-- Overview Tab -->
+        <div class="tab-content active" id="team-overview">
+            <div class="scouting-summary">
+                <h3>Team Summary</h3>
+                <p id="teamSummary">A competitive team with strong offensive capabilities and solid defensive fundamentals.</p>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-row">
+                    <span>Points Per Game</span>
+                    <span id="overviewPpg">115.6</span>
+                </div>
+                <div class="stat-row">
+                    <span>Opponent PPG</span>
+                    <span id="overviewOppg">111.2</span>
+                </div>
+                <div class="stat-row">
+                    <span>Defensive Rating</span>
+                    <span id="overviewDefRating">112.5</span>
+                </div>
+                <div class="stat-row">
+                    <span>Win Percentage</span>
+                    <span id="overviewWinPct">61.1%</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Roster Tab -->
+        <div class="tab-content" id="team-roster">
+            <div class="scouting-summary">
+                <h3>Team Roster</h3>
+            </div>
+            <div id="rosterList" class="roster-list">
+                <!-- Roster items will be populated by JavaScript -->
+            </div>
+        </div>
+
+        <!-- Stats Tab -->
+        <div class="tab-content" id="team-stats">
+            <div class="stats-controls">
+                <select class="select">
+                    <option>2023-24 Season</option>
+                    <option>Career</option>
+                </select>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-row">
+                    <span>Wins</span>
+                    <span id="statsWins">44</span>
+                </div>
+                <div class="stat-row">
+                    <span>Losses</span>
+                    <span id="statsLosses">28</span>
+                </div>
+                <div class="stat-row">
+                    <span>Points Per Game</span>
+                    <span id="statsPpg">115.6</span>
+                </div>
+                <div class="stat-row">
+                    <span>Opponent PPG</span>
+                    <span id="statsOppg">111.2</span>
+                </div>
+                <div class="stat-row">
+                    <span>Defensive Rating</span>
+                    <span id="statsDefRating">112.5</span>
+                </div>
+                <div class="stat-row">
+                    <span>Win Percentage</span>
+                    <span id="statsWinPct">61.1%</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Load JavaScript modules -->
+    <script src="scripts/utils.js"></script>
+    <script src="scripts/data-loader.js"></script>
+    <script src="scripts/search.js"></script>
+    <script src="scripts/ui.js"></script>
+    <script src="scripts/app.js"></script>
+</body>
+</html>

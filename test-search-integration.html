@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Search Integration (Task 8)</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <style>
+        .test-controls {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: #16213e;
+            padding: 20px;
+            border-radius: 8px;
+            z-index: 10000;
+            max-width: 300px;
+        }
+        .test-controls h3 {
+            margin: 0 0 10px 0;
+            font-size: 14px;
+            color: #667eea;
+        }
+        .test-controls button {
+            width: 100%;
+            margin: 5px 0;
+            padding: 8px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        .test-controls button:hover {
+            background: #5568d3;
+        }
+        .test-status {
+            margin-top: 10px;
+            padding: 10px;
+            background: #0f3460;
+            border-radius: 4px;
+            font-size: 11px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        .success { color: #68d391; }
+        .error { color: #e53e3e; }
+        .info { color: #63b3ed; }
+    </style>
+</head>
+<body>
+    <!-- Test Controls Panel -->
+    <div class="test-controls">
+        <h3>Task 8: Search Integration Tests</h3>
+        <button onclick="runAllTests()">Run All Tests</button>
+        <button onclick="testDebouncing()">Test 1: Debouncing</button>
+        <button onclick="testEmptySearch()">Test 2: Empty Search</button>
+        <button onclick="testSearchResults()">Test 3: Search Results</button>
+        <button onclick="testNoResults()">Test 4: No Results</button>
+        <button onclick="testClickHandlers()">Test 5: Click Handlers</button>
+        <button onclick="clearStatus()">Clear Status</button>
+        <div id="testStatus" class="test-status">Ready to test...</div>
+    </div>
+
+    <!-- Include the actual app HTML structure -->
+    <!-- Homepage -->
+    <div id="homepage" class="page active">
+        <div class="header">
+            <div class="nav">
+                <a href="#" class="logo">SCOUT HUB</a>
+                <div class="nav-links">
+                    <a href="#">Players</a>
+                    <a href="#">Teams</a>
+                    <a href="#">Stats</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="hero">
+            <h1>Discover Basketball Talent</h1>
+            <p>Testing search integration...</p>
+            
+            <div class="home-search-container">
+                <div class="home-search-icon">🔍</div>
+                <input type="text" class="home-search-bar" placeholder="Search players, teams, or stats..." id="homeSearchInput">
+                <div class="search-results" id="homeSearchResults"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Player Profile Page -->
+    <div id="player-profile" class="page">
+        <div class="header">
+            <div class="header-top">
+                <button class="back-btn">←</button>
+                <div class="search-container">
+                    <div class="search-icon">🔍</div>
+                    <input type="text" class="search-bar" placeholder="Search players..." id="profileSearchInput">
+                    <div class="search-results" id="profileSearchResults"></div>
+                </div>
+            </div>
+            <h1 class="player-name" id="playerName">Player Name</h1>
+            <div class="player-team" id="playerTeam">Team • Position</div>
+        </div>
+    </div>
+
+    <!-- Team Profile Page -->
+    <div id="team-profile" class="page">
+        <div class="header">
+            <div class="header-top">
+                <button class="back-btn">←</button>
+                <div class="search-container">
+                    <div class="search-icon">🔍</div>
+                    <input type="text" class="search-bar" placeholder="Search teams..." id="teamProfileSearchInput">
+                    <div class="search-results" id="teamProfileSearchResults"></div>
+                </div>
+            </div>
+            <h1 class="player-name" id="teamName">Team Name</h1>
+            <div class="player-team" id="teamCity">City • Conference</div>
+        </div>
+    </div>
+
+    <!-- Load JavaScript modules -->
+    <script src="scripts/utils.js"></script>
+    <script src="scripts/data-loader.js"></script>
+    <script src="scripts/search.js"></script>
+    <script src="scripts/ui.js"></script>
+    <script src="scripts/app.js"></script>
+
+    <script>
+        let testApp = null;
+        let testResults = [];
+
+        function log(message, type = 'info') {
+            const status = document.getElementById('testStatus');
+            const className = type === 'success' ? 'success' : type === 'error' ? 'error' : 'info';
+            status.innerHTML += `<div class="${className}">${message}</div>`;
+            status.scrollTop = status.scrollHeight;
+            console.log(message);
+        }
+
+        function clearStatus() {
+            document.getElementById('testStatus').innerHTML = 'Ready to test...';
+            testResults = [];
+        }
+
+        async function initApp() {
+            if (!testApp) {
+                log('Initializing app...', 'info');
+                testApp = new App();
+                await testApp.init();
+                log('✓ App initialized', 'success');
+            }
+        }
+
+        // Test 1: Debouncing
+        async function testDebouncing() {
+            await initApp();
+            log('--- Test 1: Debouncing ---', 'info');
+            
+            const input = document.getElementById('homeSearchInput');
+            const results = document.getElementById('homeSearchResults');
+            
+            let searchCallCount = 0;
+            const originalSearch = testApp.searchEngine.search.bind(testApp.searchEngine);
+            testApp.searchEngine.search = function(...args) {
+                searchCallCount++;
+                return originalSearch(...args);
+            };
+            
+            // Simulate rapid typing
+            input.value = 'L';
+            input.dispatchEvent(new Event('input'));
+            
+            await new Promise(resolve => setTimeout(resolve, 50));
+            input.value = 'Le';
+            input.dispatchEvent(new Event('input'));
+            
+            await new Promise(resolve => setTimeout(resolve, 50));
+            input.value = 'Leb';
+            input.dispatchEvent(new Event('input'));
+            
+            // Wait for debounce to complete
+            await new Promise(resolve => setTimeout(resolve, 400));
+            
+            if (searchCallCount === 1) {
+                log('✓ Debouncing works correctly (1 search call for 3 inputs)', 'success');
+                testResults.push({ test: 'Debouncing', passed: true });
+            } else {
+                log(`✗ Debouncing failed (${searchCallCount} search calls instead of 1)`, 'error');
+                testResults.push({ test: 'Debouncing', passed: false });
+            }
+            
+            // Restore original search
+            testApp.searchEngine.search = originalSearch;
+            input.value = '';
+        }
+
+        // Test 2: Empty Search
+        async function testEmptySearch() {
+            await initApp();
+            log('--- Test 2: Empty Search ---', 'info');
+            
+            const input = document.getElementById('homeSearchInput');
+            const results = document.getElementById('homeSearchResults');
+            
+            // Test empty string
+            input.value = '';
+            input.dispatchEvent(new Event('input'));
+            
+            await new Promise(resolve => setTimeout(resolve, 400));
+            
+            if (results.style.display === 'none' || results.style.display === '') {
+                log('✓ Empty search hides results', 'success');
+                testResults.push({ test: 'Empty Search', passed: true });
+            } else {
+                log('✗ Empty search should hide results', 'error');
+                testResults.push({ test: 'Empty Search', passed: false });
+            }
+        }
+
+        // Test 3: Search Results
+        async function testSearchResults() {
+            await initApp();
+            log('--- Test 3: Search Results ---', 'info');
+            
+            const input = document.getElementById('homeSearchInput');
+            const results = document.getElementById('homeSearchResults');
+            
+            // Search for something that should return results
+            input.value = 'Lakers';
+            input.dispatchEvent(new Event('input'));
+            
+            await new Promise(resolve => setTimeout(resolve, 400));
+            
+            const hasResults = results.innerHTML.trim() !== '';
+            const isVisible = results.style.display === 'block';
+            
+            if (hasResults && isVisible) {
+                log('✓ Search results are displayed', 'success');
+                log(`  Found: ${results.querySelectorAll('.search-result-item').length} items`, 'info');
+                
+                // Check for category headers
+                const headers = results.querySelectorAll('.search-category-header');
+                if (headers.length > 0) {
+                    log(`✓ Category headers present (${headers.length})`, 'success');
+                } else {
+                    log('⚠ No category headers found', 'error');
+                }
+                
+                testResults.push({ test: 'Search Results', passed: true });
+            } else {
+                log('✗ Search results not displayed properly', 'error');
+                testResults.push({ test: 'Search Results', passed: false });
+            }
+        }
+
+        // Test 4: No Results
+        async function testNoResults() {
+            await initApp();
+            log('--- Test 4: No Results Message ---', 'info');
+            
+            const input = document.getElementById('homeSearchInput');
+            const results = document.getElementById('homeSearchResults');
+            
+            // Search for something that should return no results
+            input.value = 'XYZABC123NOTFOUND';
+            input.dispatchEvent(new Event('input'));
+            
+            await new Promise(resolve => setTimeout(resolve, 400));
+            
+            const noResultsMessage = results.textContent.includes('No results found');
+            
+            if (noResultsMessage) {
+                log('✓ "No results found" message displayed', 'success');
+                testResults.push({ test: 'No Results Message', passed: true });
+            } else {
+                log('✗ "No results found" message not displayed', 'error');
+                testResults.push({ test: 'No Results Message', passed: false });
+            }
+        }
+
+        // Test 5: Click Handlers
+        async function testClickHandlers() {
+            await initApp();
+            log('--- Test 5: Click Handlers ---', 'info');
+            
+            const input = document.getElementById('homeSearchInput');
+            const results = document.getElementById('homeSearchResults');
+            
+            // Search for something
+            input.value = 'Lakers';
+            input.dispatchEvent(new Event('input'));
+            
+            await new Promise(resolve => setTimeout(resolve, 400));
+            
+            // Check if click handlers are attached
+            const playerItems = results.querySelectorAll('[data-player-id]');
+            const teamItems = results.querySelectorAll('[data-team-id]');
+            
+            if (playerItems.length > 0 || teamItems.length > 0) {
+                log(`✓ Found ${playerItems.length} player items and ${teamItems.length} team items`, 'success');
+                
+                // Test clicking on a player item
+                if (playerItems.length > 0) {
+                    const firstPlayer = playerItems[0];
+                    firstPlayer.click();
+                    
+                    await new Promise(resolve => setTimeout(resolve, 100));
+                    
+                    const playerPage = document.getElementById('player-profile');
+                    if (playerPage && playerPage.classList.contains('active')) {
+                        log('✓ Clicking player navigates to player profile', 'success');
+                    } else {
+                        log('✗ Player navigation failed', 'error');
+                    }
+                }
+                
+                // Test clicking on a team item
+                if (teamItems.length > 0) {
+                    // Go back to homepage first
+                    testApp.showPage('homepage');
+                    
+                    // Search again
+                    input.value = 'Lakers';
+                    input.dispatchEvent(new Event('input'));
+                    await new Promise(resolve => setTimeout(resolve, 400));
+                    
+                    const teamItems2 = results.querySelectorAll('[data-team-id]');
+                    if (teamItems2.length > 0) {
+                        const firstTeam = teamItems2[0];
+                        firstTeam.click();
+                        
+                        await new Promise(resolve => setTimeout(resolve, 100));
+                        
+                        const teamPage = document.getElementById('team-profile');
+                        if (teamPage && teamPage.classList.contains('active')) {
+                            log('✓ Clicking team navigates to team profile', 'success');
+                        } else {
+                            log('✗ Team navigation failed', 'error');
+                        }
+                    }
+                }
+                
+                testResults.push({ test: 'Click Handlers', passed: true });
+            } else {
+                log('✗ No clickable items found', 'error');
+                testResults.push({ test: 'Click Handlers', passed: false });
+            }
+        }
+
+        // Run all tests
+        async function runAllTests() {
+            clearStatus();
+            log('=== Running All Tests ===', 'info');
+            
+            await testDebouncing();
+            await testEmptySearch();
+            await testSearchResults();
+            await testNoResults();
+            await testClickHandlers();
+            
+            log('=== Test Summary ===', 'info');
+            const passed = testResults.filter(r => r.passed).length;
+            const total = testResults.length;
+            
+            if (passed === total) {
+                log(`✓ All tests passed (${passed}/${total})`, 'success');
+            } else {
+                log(`⚠ ${passed}/${total} tests passed`, 'error');
+            }
+        }
+
+        // Auto-initialize on load
+        window.addEventListener('load', async () => {
+            await initApp();
+            log('App ready for testing. Click "Run All Tests" to begin.', 'info');
+        });
+    </script>
+</body>
+</html>
