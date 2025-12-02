@@ -170,21 +170,66 @@ For client review before going live:
 
 ## Updating the Application
 
+### Recent Changes (Branding Update)
+
+**Files Modified:**
+- `index.html` - Updated logo references and branding
+- `styles/main.css` - Updated color scheme to match Wamukota Foundation logo
+- `bush-logo.jpg` - New logo file added
+
 ### If Deployed via GitHub:
-1. Make changes to your local files
-2. Commit and push to GitHub:
+
+1. **Check what files changed:**
+   ```bash
+   git status
+   ```
+
+2. **Add all changed files:**
+   ```bash
+   git add index.html styles/main.css bush-logo.jpg
+   ```
+   Or add everything:
    ```bash
    git add .
-   git commit -m "Update player stats"
-   git push
    ```
-3. Vercel automatically deploys the changes
-4. Share the same URL with your client (it updates automatically)
+
+3. **Commit with a descriptive message:**
+   ```bash
+   git commit -m "Add Wamukota Foundation branding and update color scheme"
+   ```
+
+4. **Push to GitHub:**
+   ```bash
+   git push origin main
+   ```
+
+5. **Vercel automatically deploys the changes**
+   - Check your Vercel dashboard to see deployment progress
+   - Usually takes 30-60 seconds
+   - Same URL updates automatically
 
 ### If Deployed via Dashboard/CLI:
 1. Make changes to your local files
 2. Run `vercel --prod` again
 3. The same URL will be updated with new content
+
+### Quick Update Commands (GitHub Method)
+
+For future updates, use this quick workflow:
+
+```bash
+# See what changed
+git status
+
+# Add all changes
+git add .
+
+# Commit with message
+git commit -m "Your update description"
+
+# Push to GitHub (triggers auto-deploy)
+git push origin main
+```
 
 ## Updating Player/Team Data
 

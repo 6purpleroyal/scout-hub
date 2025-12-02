@@ -1,14 +1,17 @@
 /* All the CSS from both pages combined */
 :root {
-    --primary: #2563eb;
-    --primary-dark: #1d4ed8;
-    --dark-bg: #0f172a;
-    --dark-card: #1e293b;
-    --dark-border: #334155;
-    --text-primary: #f8fafc;
-    --text-secondary: #cbd5e1;
-    --accent-green: #10b981;
-    --accent-red: #ef4444;
+    /* Logo-inspired color palette */
+    --primary: #FF6B35;        /* Sunset orange */
+    --primary-dark: #E85D2C;   /* Darker orange */
+    --secondary: #FFB627;      /* Golden yellow */
+    --accent-red: #D94A3D;     /* Deep red from sunset */
+    --accent-teal: #1A4D5E;    /* Deep teal from mountains */
+    --dark-bg: #0A1628;        /* Deep night blue */
+    --dark-card: #1A2942;      /* Dark blue-grey */
+    --dark-border: #2D3E5F;    /* Muted blue border */
+    --text-primary: #F5F5F5;   /* Off-white */
+    --text-secondary: #B8C5D6; /* Light blue-grey */
+    --accent-green: #10b981;   /* Keep for positive stats */
 }
 
 * {
@@ -53,10 +56,45 @@ body {
 }
 
 .logo {
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: var(--primary);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
     text-decoration: none;
+}
+
+.logo-image {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.logo-image-small {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.logo-text {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.2;
+    font-weight: 700;
+    font-size: 0.85rem;
+    color: var(--text-primary);
+    letter-spacing: 0.5px;
+}
+
+.logo-subtitle {
+    font-size: 0.75rem;
+    color: var(--primary);
+    font-weight: 600;
+    margin-top: 2px;
+}
+
+.logo-small {
+    margin: 0 0.5rem;
 }
 
 .nav-links {
@@ -142,7 +180,7 @@ body {
 .hero h1 {
     font-size: 2rem;
     margin-bottom: 1rem;
-    background: linear-gradient(135deg, var(--primary) 0%, #8b5cf6 100%);
+    background: linear-gradient(135deg, var(--secondary) 0%, var(--primary) 50%, var(--accent-red) 100%);
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -248,7 +286,7 @@ body {
 
 .player-card-image {
     height: 120px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, var(--accent-teal) 0%, var(--primary) 50%, var(--secondary) 100%);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -304,7 +342,7 @@ body {
     width: 100px;
     height: 100px;
     border-radius: 12px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, var(--accent-teal) 0%, var(--primary) 50%, var(--secondary) 100%);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -478,7 +516,7 @@ body {
 .video-thumbnail {
     width: 100%;
     height: 200px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, var(--accent-teal) 0%, var(--primary) 50%, var(--secondary) 100%);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -532,7 +570,7 @@ body {
 
 .video-item-thumb {
     height: 100px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, var(--accent-teal) 0%, var(--primary) 50%, var(--secondary) 100%);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -586,7 +624,7 @@ body {
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, var(--accent-teal) 0%, var(--primary) 50%, var(--secondary) 100%);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -837,9 +875,9 @@ body {
 /* Dark mode support (already dark by default, but explicit) */
 @media (prefers-color-scheme: dark) {
     :root {
-        --primary: #3b82f6;
-        --dark-bg: #0f172a;
-        --dark-card: #1e293b;
+        --primary: #FF6B35;
+        --dark-bg: #0A1628;
+        --dark-card: #1A2942;
     }
 }
 
