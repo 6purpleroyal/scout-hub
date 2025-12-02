@@ -327,6 +327,53 @@ Example:
 4. ✅ Make updates as needed
 5. ✅ Monitor analytics
 
+## Customization Tips
+
+### Adding Logo Background Watermark
+
+The hero section now includes a subtle logo watermark in the background. 
+
+**To adjust the opacity:**
+Edit `styles/main.css` and find `.hero::before` - change the `opacity` value:
+- Current: `0.08` (very subtle)
+- More visible: `0.15`
+- Less visible: `0.05`
+
+**To remove the background logo:**
+In `styles/main.css`, delete or comment out this section:
+```css
+.hero::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 300px;
+    height: 300px;
+    background-image: url('bush-logo.jpg');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    opacity: 0.08;
+    z-index: 0;
+    pointer-events: none;
+}
+
+.hero > * {
+    position: relative;
+    z-index: 1;
+}
+```
+
+And change `.hero` back to:
+```css
+.hero {
+    padding: 2rem 1rem;
+    text-align: center;
+    background: linear-gradient(135deg, var(--dark-bg) 0%, var(--dark-card) 100%);
+}
+```
+
 ## Quick Deployment Checklist
 
 - [ ] All files are in project folder
