@@ -146,12 +146,18 @@ class UIManager {
     // Team city and record
     const cityRecord = document.createElement('div');
     cityRecord.className = 'search-result-team';
-    cityRecord.textContent = `${team.city} • ${team.stats.wins}-${team.stats.losses}`;
+    const record = (team.stats.wins === '-' || team.stats.losses === '-') 
+      ? 'Record: -' 
+      : `${team.stats.wins}-${team.stats.losses}`;
+    cityRecord.textContent = `${team.city} • ${record}`;
 
     // Team stats
     const stats = document.createElement('div');
     stats.className = 'search-result-stats';
-    stats.textContent = `${team.stats.ppg} PPG • ${team.stats.oppg} OPPG • ${team.stats.def_rating} DEF`;
+    const ppg = team.stats.ppg === '-' ? '-' : team.stats.ppg;
+    const oppg = team.stats.oppg === '-' ? '-' : team.stats.oppg;
+    const def = team.stats.def_rating === '-' ? '-' : team.stats.def_rating;
+    stats.textContent = `${ppg} PPG • ${oppg} OPPG • ${def} DEF`;
 
     // Assemble the card
     info.appendChild(name);

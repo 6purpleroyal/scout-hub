@@ -618,27 +618,33 @@ class App {
     const allPlayers = this.dataLoader.getAllPlayers();
     const allTeams = this.dataLoader.getAllTeams();
 
+    // Helper to parse stats safely
+    const parseStat = (val) => {
+      if (val === '-' || val === undefined || val === null) return 0;
+      return parseFloat(val) || 0;
+    };
+
     // Top Scorers
     const topScorers = [...allPlayers]
-      .sort((a, b) => b.stats.pts - a.stats.pts)
+      .sort((a, b) => parseStat(b.stats.pts) - parseStat(a.stats.pts))
       .slice(0, 10);
     this.renderStatsList('topScorers', topScorers, 'pts', 'PTS');
 
     // Top Rebounders
     const topRebounders = [...allPlayers]
-      .sort((a, b) => b.stats.reb - a.stats.reb)
+      .sort((a, b) => parseStat(b.stats.reb) - parseStat(a.stats.reb))
       .slice(0, 10);
     this.renderStatsList('topRebounders', topRebounders, 'reb', 'REB');
 
     // Top Assisters
     const topAssisters = [...allPlayers]
-      .sort((a, b) => b.stats.ast - a.stats.ast)
+      .sort((a, b) => parseStat(b.stats.ast) - parseStat(a.stats.ast))
       .slice(0, 10);
     this.renderStatsList('topAssisters', topAssisters, 'ast', 'AST');
 
     // Best Records
     const bestRecords = [...allTeams]
-      .sort((a, b) => b.stats.wins - a.stats.wins)
+      .sort((a, b) => parseStat(b.stats.wins) - parseStat(a.stats.wins))
       .slice(0, 10);
     this.renderTeamStatsList('bestRecords', bestRecords);
   }
@@ -744,7 +750,10 @@ class App {
       // Value
       const value = document.createElement('div');
       value.className = 'stat-item-value';
-      value.textContent = `${team.stats.wins}-${team.stats.losses}`;
+      const record = (team.stats.wins === '-' || team.stats.losses === '-') 
+        ? '-' 
+        : `${team.stats.wins}-${team.stats.losses}`;
+      value.textContent = record;
 
       item.appendChild(rank);
       item.appendChild(info);

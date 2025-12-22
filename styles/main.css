@@ -185,13 +185,13 @@ body {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 300px;
-    height: 300px;
+    width: 600px;
+    height: 600px;
     background-image: url('../bush-logo.jpg');
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
-    opacity: 0.80;
+    opacity: 0.30;
     z-index: 0;
     pointer-events: none;
 }
