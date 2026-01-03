@@ -84,8 +84,13 @@ class UIManager {
     // Create player image/avatar
     const image = document.createElement('div');
     image.className = 'search-result-image';
-    image.style.background = `linear-gradient(135deg, ${player.color} 0%, #764ba2 100%)`;
-    image.textContent = player.initials;
+    if (player.photo) {
+      image.style.background = `url('${player.photo}') center/cover no-repeat`;
+      image.textContent = '';
+    } else {
+      image.style.background = `linear-gradient(135deg, ${player.color} 0%, #764ba2 100%)`;
+      image.textContent = player.initials;
+    }
 
     // Create info container
     const info = document.createElement('div');
@@ -217,12 +222,12 @@ class UIManager {
     // Update vitals
     const heightEl = document.getElementById('playerHeight');
     const weightEl = document.getElementById('playerWeight');
-    const ageEl = document.getElementById('playerAge');
+    const dobEl = document.getElementById('playerDob');
     const wingspanEl = document.getElementById('playerWingspan');
     
     if (heightEl) heightEl.textContent = player.height;
     if (weightEl) weightEl.textContent = player.weight;
-    if (ageEl) ageEl.textContent = player.age;
+    if (dobEl) dobEl.textContent = player.dob;
     if (wingspanEl) wingspanEl.textContent = player.wingspan;
 
     // Update KPI stats

@@ -73,8 +73,8 @@ async function runIntegrationTest() {
 
   try {
     // Load data
-    const playersData = JSON.parse(fs.readFileSync(path.join(__dirname, 'data', 'players.json'), 'utf8'));
-    const teamsData = JSON.parse(fs.readFileSync(path.join(__dirname, 'data', 'teams.json'), 'utf8'));
+    const playersData = JSON.parse(fs.readFileSync(path.join(__dirname, 'data', 'players1.json'), 'utf8'));
+    const teamsData = JSON.parse(fs.readFileSync(path.join(__dirname, 'data', 'teams1.json'), 'utf8'));
 
     const dataLoader = new DataLoader();
     dataLoader.players = playersData;
@@ -126,7 +126,7 @@ async function runIntegrationTest() {
       { name: 'Position', value: testPlayer.position },
       { name: 'Height', value: testPlayer.height },
       { name: 'Weight', value: testPlayer.weight },
-      { name: 'Age', value: testPlayer.age },
+      { name: 'DOB', value: testPlayer.dob },
       { name: 'Wingspan', value: testPlayer.wingspan },
       { name: 'Points', value: testPlayer.stats.pts },
       { name: 'Rebounds', value: testPlayer.stats.reb },
