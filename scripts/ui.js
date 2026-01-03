@@ -205,8 +205,13 @@ class UIManager {
     // Update player photo
     const playerPhotoEl = document.getElementById('playerPhoto');
     if (playerPhotoEl) {
-      playerPhotoEl.style.background = `linear-gradient(135deg, ${player.color} 0%, #764ba2 100%)`;
-      playerPhotoEl.textContent = player.initials;
+      if (player.photo) {
+        playerPhotoEl.style.background = `url('${player.photo}') center/cover no-repeat`;
+        playerPhotoEl.textContent = '';
+      } else {
+        playerPhotoEl.style.background = `linear-gradient(135deg, ${player.color} 0%, #764ba2 100%)`;
+        playerPhotoEl.textContent = player.initials;
+      }
     }
 
     // Update vitals

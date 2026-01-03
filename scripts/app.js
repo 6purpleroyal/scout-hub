@@ -297,8 +297,13 @@ class App {
     // Player image
     const image = document.createElement('div');
     image.className = 'player-card-image';
-    image.style.background = `linear-gradient(135deg, ${player.color} 0%, #764ba2 100%)`;
-    image.textContent = player.initials;
+    if (player.photo) {
+      image.style.background = `url('${player.photo}') center/cover no-repeat`;
+      image.textContent = '';
+    } else {
+      image.style.background = `linear-gradient(135deg, ${player.color} 0%, #764ba2 100%)`;
+      image.textContent = player.initials;
+    }
 
     // Player info container
     const info = document.createElement('div');
