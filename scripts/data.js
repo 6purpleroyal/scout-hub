@@ -28,7 +28,7 @@ const PLAYERS_DATA = [
     },
     "color": "#667eea",
     "initials": "GO",
-    "photo": "data/photos/darel.jpg",
+    "photo": "data/photos/Darel.jpg",
     "bio": "Promising young player with good fundamentals. Shows potential for growth and development."
   },
   {
@@ -79,7 +79,7 @@ const PLAYERS_DATA = [
     },
     "color": "#f6e05e",
     "initials": "AO",
-    "photo": "data/photos/darel.jpg",
+    "photo": "data/photos/Darel.jpg",
     "bio": "Versatile player with good court awareness. Continues to develop both offensive and defensive skills."
   },
   {
