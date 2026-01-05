@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Scout Hub Application",
   "scripts": {
-    "build": "node update_data.js"
+    "build": "node build.js"
   },
   "keywords": [],
   "author": "",
