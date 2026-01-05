@@ -1,0 +1,11 @@
+{
+  "name": "bush",
+  "version": "1.0.0",
+  "description": "Scout Hub Application",
+  "scripts": {
+    "build": "node update_data.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

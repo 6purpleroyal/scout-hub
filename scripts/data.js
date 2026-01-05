@@ -28,7 +28,7 @@ const PLAYERS_DATA = [
     },
     "color": "#667eea",
     "initials": "GO",
-    "photo": "data/photos/Darel.jpg",
+    "photo": "data/photos/odanga.jpg",
     "bio": "Promising young player with good fundamentals. Shows potential for growth and development."
   },
   {
@@ -54,6 +54,7 @@ const PLAYERS_DATA = [
     },
     "color": "#e53e3e",
     "initials": "DS",
+    "photo": "data/photos/denzel.jpg",
     "bio": "Young athlete with developing skills. Shows enthusiasm and commitment to the game."
   },
   {
@@ -79,7 +80,7 @@ const PLAYERS_DATA = [
     },
     "color": "#f6e05e",
     "initials": "AO",
-    "photo": "data/photos/Darel.jpg",
+    "photo": "data/photos/andy.jpg",
     "bio": "Versatile player with good court awareness. Continues to develop both offensive and defensive skills."
   },
   {
@@ -105,6 +106,7 @@ const PLAYERS_DATA = [
     },
     "color": "#68d391",
     "initials": "MG",
+    "photo": "data/photos/majok.jpg",
     "bio": "Strong presence in the paint with good rebounding instincts. Works hard on both ends of the court."
   },
   {
@@ -130,7 +132,7 @@ const PLAYERS_DATA = [
     },
     "color": "#9f7aea",
     "initials": "KM",
-    "photo": "data/photos/darel.jpg",
+    "photo": "data/photos/khalifa.jpg",
     "bio": "Tall and developing big man with good shot-blocking potential. Shows promise in the post."
   },
   {
@@ -156,7 +158,7 @@ const PLAYERS_DATA = [
     },
     "color": "#4299e1",
     "initials": "AB",
-    "photo": "data/photos/darel.jpg",
+    "photo": "data/photos/aziz.jpg",
     "bio": "Quick guard with good ball-handling skills. Shows leadership potential on the court."
   },
   {
@@ -182,7 +184,7 @@ const PLAYERS_DATA = [
     },
     "color": "#ed64a6",
     "initials": "DD",
-    "photo": "data/photos/darel.jpg",
+    "photo": "data/photos/diing.jpg",
     "bio": "Athletic guard with good scoring instincts. Continues to develop shooting consistency."
   },
   {
@@ -208,7 +210,7 @@ const PLAYERS_DATA = [
     },
     "color": "#f6ad55",
     "initials": "JM",
-    "photo": "data/photos/darel.jpg",
+    "photo": "data/photos/james.jpg",
     "bio": "Well-rounded player with good fundamentals. Shows versatility on both offense and defense."
   },
   {
@@ -234,7 +236,7 @@ const PLAYERS_DATA = [
     },
     "color": "#fc8181",
     "initials": "BE",
-    "photo": "data/photos/darel.jpg",
+    "photo": "data/photos/blaise.jpg",
     "bio": "Young forward with good energy and hustle. Shows potential as a rebounder and defender."
   },
   {
@@ -260,7 +262,7 @@ const PLAYERS_DATA = [
     },
     "color": "#fbb6ce",
     "initials": "EL",
-    "photo": "data/photos/darel.jpg",
+    "photo": "data/photos/erick.jpg",
     "bio": "Developing big man with good size. Works on post moves and defensive positioning."
   },
   {
@@ -286,6 +288,7 @@ const PLAYERS_DATA = [
     },
     "color": "#a0aec0",
     "initials": "BW",
+    "photo": "data/photos/blaine.jpg",
     "bio": "Experienced guard with good court vision. Provides leadership and direction on offense."
   },
   {
@@ -311,7 +314,7 @@ const PLAYERS_DATA = [
     },
     "color": "#e9d8a6",
     "initials": "JO",
-    "photo": "data/photos/darel.jpg",
+    "photo": "data/photos/juvel.jpg",
     "bio": "Scoring guard with good shooting form. Works on creating space and shot selection."
   },
   {
@@ -337,7 +340,7 @@ const PLAYERS_DATA = [
     },
     "color": "#bee3f8",
     "initials": "PE",
-    "photo": "data/photos/darel.jpg",
+    "photo": "data/photos/peterson.jpg",
     "bio": "Young forward with good athleticism. Shows promise as a versatile defender."
   },
   {
@@ -363,7 +366,7 @@ const PLAYERS_DATA = [
     },
     "color": "#c6f6d5",
     "initials": "JM",
-    "photo": "data/photos/darel.jpg",
+    "photo": "data/photos/john.jpg",
     "bio": "Hard-working forward with good rebounding instincts. Continues to develop offensive skills."
   },
   {
@@ -389,6 +392,7 @@ const PLAYERS_DATA = [
     },
     "color": "#fed7d7",
     "initials": "AA",
+    "photo": "data/photos/alvin.jpg",
     "bio": "Versatile wing player with good size. Shows potential as a two-way contributor."
   },
   {
@@ -414,6 +418,7 @@ const PLAYERS_DATA = [
     },
     "color": "#e9d8fd",
     "initials": "BK",
+    "photo": "data/photos/bram.jpg",
     "bio": "Physical big man with good strength. Provides interior presence on both ends."
   },
   {
@@ -439,7 +444,7 @@ const PLAYERS_DATA = [
     },
     "color": "#fefcbf",
     "initials": "NO",
-    "photo": "data/photos/darel.jpg",
+    "photo": "data/photos/nicodemus.jpg",
     "bio": "Quick and agile guard with good passing ability. Shows good decision-making skills."
   },
   {
@@ -465,7 +470,7 @@ const PLAYERS_DATA = [
     },
     "color": "#d1d5db",
     "initials": "AM",
-    "photo": "data/photos/darel.jpg",
+    "photo": "data/photos/majid.jpg",
     "bio": "Solid guard with good defensive instincts. Works on improving offensive consistency."
   }
 ];
